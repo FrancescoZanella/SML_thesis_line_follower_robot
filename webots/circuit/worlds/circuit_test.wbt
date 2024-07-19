@@ -1,0 +1,105 @@
+#VRML_SIM R2023b utf8
+
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackground.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/floors/protos/RectangleArena.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/robots/gctronic/e-puck/protos/E-puck.proto"
+
+WorldInfo {
+  basicTimeStep 16
+}
+Viewpoint {
+  orientation 0.14035049361277363 0.6590801034320226 0.7388607150219079 5.72194912305573
+  position -2.0964157145549915 0.7306963580718673 -0.502408652779351
+  follow "test"
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+DEF floor RectangleArena {
+  name "rectangle arena(1)"
+  floorSize 2 2
+  floorTileSize 0.25 0.25
+  floorAppearance PBRAppearance {
+    metalness 0
+  }
+  wallHeight 0.05
+}
+Solid {
+  translation -2.02332 0.871735 -5.49561e-14
+  children [
+    Transform {
+      scale 0.028 0.028 0.001
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0 0 0
+            roughness 1
+            metalness 0
+          }
+          geometry Mesh {
+            url [
+              "../../Tremendous Bojo-Amberis/tinker.obj"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+  name "test"
+}
+E-puck {
+  translation -0.44455 0.605113 -3.19727e-05
+  rotation -0.0004860113543325004 5.882842409952825e-05 -0.9999998801660828 -2.900676877841405
+  name "e-puck_test"
+  controller "line_follower"
+  groundSensorsSlot [
+    DistanceSensor {
+      translation 0 0.03 0
+      rotation 0 1 0 1.5707996938995747
+      name "ir_0"
+      type "infra-red"
+    }
+    DistanceSensor {
+      translation 0 0.02 0
+      rotation 0 1 0 1.5707996938995747
+      name "ir_1"
+      type "infra-red"
+    }
+    DistanceSensor {
+      translation 0 0.01 0
+      rotation 0 1 0 1.5707996938995747
+      name "ir_2"
+      type "infra-red"
+    }
+    DistanceSensor {
+      rotation 0 1 0 1.5707996938995747
+      name "ir_3"
+      type "infra-red"
+    }
+    DistanceSensor {
+      translation 0 -0.01 0
+      rotation 0 1 0 1.5707996938995747
+      name "ir_4"
+      type "infra-red"
+    }
+    DistanceSensor {
+      translation 0 -0.02 0
+      rotation 0 1 0 1.5707996938995747
+      name "ir_5"
+      type "infra-red"
+    }
+    DistanceSensor {
+      translation 0 -0.03 0
+      rotation 0 1 0 1.5707996938995747
+      name "ir_6"
+      type "infra-red"
+    }
+  ]
+}
+Robot {
+  name "supervisor"
+  controller "<none>"
+  supervisor TRUE
+}

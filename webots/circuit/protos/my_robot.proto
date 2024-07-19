@@ -1,0 +1,61 @@
+#VRML_SIM R2023b utf8
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/robots/gctronic/e-puck/protos/E-puck.proto"
+PROTO my_robot [
+  
+]
+{
+  DEF my_epuck E-puck {
+  hidden position_0_0 10.053201352292627
+  hidden position_0_1 8.78858673224027
+  hidden rotation_1 0 -1 0 2.5131692620665462
+  hidden rotation_2 0 -0.9999999999999999 0 3.7777838821189023
+  translation -0.4191909800230344 -0.3083957728292996 -3.2034327996166914e-05
+  rotation 0.0006576362454360368 -0.008593735032699694 0.9999628569265743 0.15401448680781582
+  name "e-puck_train"
+  controller "line_follower"
+  groundSensorsSlot [
+    DistanceSensor {
+      translation 0 0.03 0
+      rotation 0 1 0 1.5707996938995747
+      name "ir_0"
+      type "infra-red"
+    }
+    DistanceSensor {
+      translation 0 0.02 0
+      rotation 0 1 0 1.5707996938995747
+      name "ir_1"
+      type "infra-red"
+    }
+    DistanceSensor {
+      translation 0 0.01 0
+      rotation 0 1 0 1.5707996938995747
+      name "ir_2"
+      type "infra-red"
+    }
+    DistanceSensor {
+      rotation 0 1 0 1.5707996938995747
+      name "ir_3"
+      type "infra-red"
+    }
+    DistanceSensor {
+      translation 0 -0.01 0
+      rotation 0 1 0 1.5707996938995747
+      name "ir_4"
+      type "infra-red"
+    }
+    DistanceSensor {
+      translation 0 -0.02 0
+      rotation 0 1 0 1.5707996938995747
+      name "ir_5"
+      type "infra-red"
+    }
+    DistanceSensor {
+      translation 0 -0.03 0
+      rotation 0 1 0 1.5707996938995747
+      name "ir_6"
+      type "infra-red"
+    }
+  ]
+}
+  
+}

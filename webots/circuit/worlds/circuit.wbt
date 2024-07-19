@@ -1,0 +1,156 @@
+#VRML_SIM R2023b utf8
+
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackground.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/floors/protos/RectangleArena.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/robots/gctronic/e-puck/protos/E-puck.proto"
+
+WorldInfo {
+  basicTimeStep 16
+}
+Viewpoint {
+  orientation -0.24535942710001007 -0.008521881269431222 0.9693947230477298 3.208917240545459
+  position 4.245665641345573 1.753142441311206 2.4929889612521463
+  follow "complete"
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+DEF floor RectangleArena {
+  translation 0 0 1.77636e-15
+  floorSize 2 2
+  floorTileSize 0.25 0.25
+  floorAppearance PBRAppearance {
+    baseColor 0.8588235294117647 0.8588235294117647 0.8588235294117647
+    metalness 0
+  }
+  wallHeight 0.05
+}
+Solid {
+  translation 0.205915 0.361751 -1.90958e-14
+  children [
+    Transform {
+      scale 0.028 0.028 0.001
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0 0 0
+            roughness 1
+            metalness 0
+          }
+          geometry Mesh {
+            url [
+              "../../Cool Turing-Trug/tinker.obj"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+  name "train"
+}
+Solid {
+  translation 5.90938 3.31345 -1.31006e-14
+  rotation 0 0 1 0.5235996938995747
+  children [
+    Transform {
+      scale 0.028 0.028 0.001
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0 0 0
+            roughness 1
+            metalness 0
+          }
+          geometry Mesh {
+            url [
+              "../../line/tinker.obj"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+  name "train(1)"
+}
+Solid {
+  translation 0.625892 5.33681 -5.55111e-14
+  children [
+    Transform {
+      scale 0.033 0.035 0.001
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0 0 0
+            roughness 1
+            metalness 0
+          }
+          geometry Mesh {
+            url [
+              "../../Fantastic Leelo-Fyyran/tinker.obj"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+  name "complex"
+}
+DEF my_epuck E-puck {
+  translation 0.137839 0.496731 -3.19817e-05
+  rotation 7.325698052354993e-05 -8.462637780219815e-05 0.9999999937358957 1.4270460544619912
+  name "complete"
+  controller "complete"
+  groundSensorsSlot [
+    LightSensor {
+      name "light_sensor"
+    }
+    DistanceSensor {
+      translation 0 0.03 0
+      rotation 0 1 0 1.5707996938995747
+      name "ir_0"
+      type "infra-red"
+    }
+    DistanceSensor {
+      translation 0 0.02 0
+      rotation 0 1 0 1.5707996938995747
+      name "ir_1"
+      type "infra-red"
+    }
+    DistanceSensor {
+      translation 0 0.01 0
+      rotation 0 1 0 1.5707996938995747
+      name "ir_2"
+      type "infra-red"
+    }
+    DistanceSensor {
+      rotation 0 1 0 1.5707996938995747
+      name "ir_3"
+      type "infra-red"
+    }
+    DistanceSensor {
+      translation 0 -0.01 0
+      rotation 0 1 0 1.5707996938995747
+      name "ir_4"
+      type "infra-red"
+    }
+    DistanceSensor {
+      translation 0 -0.02 0
+      rotation 0 1 0 1.5707996938995747
+      name "ir_5"
+      type "infra-red"
+    }
+    DistanceSensor {
+      translation 0 -0.03 0
+      rotation 0 1 0 1.5707996938995747
+      name "ir_6"
+      type "infra-red"
+    }
+  ]
+}
+Robot {
+  name "supervisor"
+  controller "supervisor"
+  supervisor TRUE
+}

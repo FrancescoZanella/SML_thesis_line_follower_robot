@@ -62,6 +62,20 @@ def load_label(irs_values):
     else:
         return 0
 
+def create_directories():
+    # Ensure that the directories for data and plots exist
+    base_path = Path(MODEL_PATH).parent.parent
+    data_path = base_path.joinpath('data')
+    labels_path = data_path.joinpath('labels')
+    sensors_data_path = data_path.joinpath('sensors_data')
+    plots_path = base_path.joinpath('plots')
+
+    # Create directories if they don't exist
+    data_path.mkdir(parents=True, exist_ok=True)
+    labels_path.mkdir(parents=True, exist_ok=True)
+    sensors_data_path.mkdir(parents=True, exist_ok=True)
+    plots_path.mkdir(parents=True, exist_ok=True)
+
 def get_sensors_data(sensors):
     sensor_data_t = []
     for i in range(0,7):
@@ -108,7 +122,7 @@ def run_robot(robot):
         # load the model trained on classic environment
         pretrained_model,metric = load_model()
 
-    i = 0
+    create_directories()
     while robot.step(TIME_STEP) != -1:
            
 

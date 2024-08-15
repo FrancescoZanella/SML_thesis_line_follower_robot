@@ -10,7 +10,7 @@ WorldInfo {
 }
 Viewpoint {
   orientation -0.24535942710001007 -0.008521881269431222 0.9693947230477298 3.208917240545459
-  position 4.245665641345573 1.753142441311206 2.4929889612521463
+  position 4.032490956268782 0.5823466853397881 2.525607445410955
   follow "complete"
 }
 TexturedBackground {
@@ -22,7 +22,6 @@ DEF floor RectangleArena {
   floorSize 2 2
   floorTileSize 0.25 0.25
   floorAppearance PBRAppearance {
-    baseColor 0.8588235294117647 0.8588235294117647 0.8588235294117647
     metalness 0
   }
   wallHeight 0.05
@@ -50,58 +49,14 @@ Solid {
   ]
   name "train"
 }
-Solid {
-  translation 5.90938 3.31345 -1.31006e-14
-  rotation 0 0 1 0.5235996938995747
-  children [
-    Transform {
-      scale 0.028 0.028 0.001
-      children [
-        Shape {
-          appearance PBRAppearance {
-            baseColor 0 0 0
-            roughness 1
-            metalness 0
-          }
-          geometry Mesh {
-            url [
-              "../../line/tinker.obj"
-            ]
-          }
-        }
-      ]
-    }
-  ]
-  name "train(1)"
-}
-Solid {
-  translation 0.625892 5.33681 -5.55111e-14
-  children [
-    Transform {
-      scale 0.033 0.035 0.001
-      children [
-        Shape {
-          appearance PBRAppearance {
-            baseColor 0 0 0
-            roughness 1
-            metalness 0
-          }
-          geometry Mesh {
-            url [
-              "../../Fantastic Leelo-Fyyran/tinker.obj"
-            ]
-          }
-        }
-      ]
-    }
-  ]
-  name "complex"
-}
 DEF my_epuck E-puck {
-  translation 0.137839 0.496731 -3.19817e-05
-  rotation 7.325698052354993e-05 -8.462637780219815e-05 0.9999999937358957 1.4270460544619912
+  translation -0.6941465441490671 0.27548637010946697 -3.1122526296435e-05
+  rotation -0.005507075627258616 0.0018859382529527217 0.9999830575339471 2.4255291012249267
   name "complete"
   controller "complete"
+  controllerArgs [
+    "True C:\\Users\\franc\\Desktop\\TESI\\SML_thesis_line_follower_robot\\webots\\models\\model_knn.pkl True True True False"
+  ]
   groundSensorsSlot [
     LightSensor {
       name "light_sensor"
@@ -151,6 +106,6 @@ DEF my_epuck E-puck {
 }
 Robot {
   name "supervisor"
-  controller "supervisor"
+  controller "<none>"
   supervisor TRUE
 }

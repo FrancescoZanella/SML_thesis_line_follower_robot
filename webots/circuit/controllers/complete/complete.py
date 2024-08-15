@@ -3,13 +3,15 @@
 from controller import Robot
 import numpy as np
 from river import metrics
-import pandas as pd
 import pickle
 import matplotlib.pyplot as plt
+import datetime
+from pathlib import Path
+import sys
 
 
 
-MODEL_TO_LOAD = "arf"
+
 
 TIME_STEP = 16
 MAX_SPEED = 6.28
@@ -35,24 +37,21 @@ def initialize_devices(robot):
 
 
 def load_model():
-
-    with open(f'C:\\Users\\franc\\Desktop\\TESI\\webots\\models\\model_{MODEL_TO_LOAD}.pkl', 'rb') as f:
+    with open(f'{MODEL_PATH}', 'rb') as f:
         pretrained_model = pickle.load(f)
     
     return pretrained_model,metrics.Accuracy()
 
-
+def save_data(path, data, type):
+    #save data to have true label
+    file_name = f'{type} {datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.csv'
+    print(f'Saving data to {path}')
+    np.savetxt(str(Path(path).joinpath(file_name)), np.array(data), delimiter=',')
 
     
 def load_label(irs_values):
-
-    
-        
-
     line_not_detected = np.array([value >= 100 or value <= 5 for value in irs_values])
-        
-        
-              
+            
     weights = np.array([-0.3, -0.2, -0.1, 0, 0.1, 0.2, 0.3])
      
     somma = np.multiply(weights, ~line_not_detected)
@@ -99,19 +98,20 @@ def control_robot(prediction,left_motor,right_motor,left_speed,right_speed):
 def run_robot(robot):
     
     
-    sensors,left_motor,right_motor = initialize_devices(robot)
-    
-    # load the model trained on classic environment
-    pretrained_model,metric = load_model()
-    
-    
     
     accuracy_log = []
-    
+    labels = []
+    sensors_data = []
+
+    sensors,left_motor,right_motor = initialize_devices(robot)
+    if PRODUCTION == 'True':
+        # load the model trained on classic environment
+        pretrained_model,metric = load_model()
+
+    i = 0
     while robot.step(TIME_STEP) != -1:
            
 
-        
         couple = {
             0: 'straight',
             2: 'right',
@@ -123,58 +123,106 @@ def run_robot(robot):
         
         # get sensors(new) data with drift inserted at some time
         X,irs_values = get_sensors_data(sensors=sensors)
+        sensors_data.append(irs_values)
+        
+        if PRODUCTION == 'True':
+            # use the model to predict how the model should move
+            y_pred = pretrained_model.predict_one(X)
+            
+            y = load_label(irs_values)
+            
+            labels.append(y)
+            
+            if VERBOSE == 'True':
+                print(f'Predicted label: {couple[int(y_pred)]}')
+                print(f'True label: {couple[int(y)]}')
+
+            #update the model      
+            pretrained_model.learn_one(X, y)    
+            metric.update(y, y_pred)
+
+            if VERBOSE == 'True':
+                print(f'Accuracy: {metric.get()}')
+            
+            accuracy_log.append(metric.get())
+        else:
+            # move the robot using the "pid" way
+            y_pred = load_label(irs_values)
+            labels.append(y_pred)
 
         
-        
-        
-        # use the model to predict how the model should move
-        y_pred = pretrained_model.predict_one(X)
-        y = load_label(irs_values)
-        
-        print(f'Predicted label: {couple[int(y_pred)]}')
-        print(f'True label: {couple[int(y)]}')
-
         control_robot(y_pred,left_motor,right_motor,left_speed,right_speed)
+        
+    
+    
+    ## da qui in poi non sembra venga eseguito questo codice
+    if SAVE_LABELS == 'True' and PRODUCTION == 'False':
+        # save labels
+        save_data(Path(MODEL_PATH).parent.parent.joinpath('data').joinpath('labels'), labels,"true_labels")
+    if SAVE_SENSORS == 'True' and PRODUCTION == 'False':
+        # save data to train ml model
+        save_data(Path(MODEL_PATH).parent.parent.joinpath('data').joinpath('sensors_data'), sensors_data,"sensor_data")
+
+
+        
+        
 
             
-        #update the model      
-        pretrained_model.learn_one(X, y)    
-        metric.update(y, y_pred)
+       
         
         
         
         
 
-        print(f'Accuracy: {metric.get()}')
-        accuracy_log.append(metric.get())
+        
         
     
         
     
-        
-    plt.figure(figsize=(10, 5))
-    plt.plot(accuracy_log, label='Accuracy')
-    plt.xlabel('Time Step')
-    plt.ylabel('Accuracy')
-    plt.title('Accuracy over Time')
-    plt.legend()
-    plt.grid(True)
-    plt.savefig('accuracy_plot.png')
+    if PLOT == 'True' and PRODUCTION == 'True':
+        plt.figure(figsize=(10, 5))
+        plt.plot(accuracy_log, label='Accuracy')
+        plt.xlabel('Time Step')
+        plt.ylabel('Accuracy')
+        plt.title('Accuracy over Time')
+        plt.legend()
+        plt.grid(True)
+        plt.savefig(Path(MODEL_PATH).parent.parent.joinpath('plots').joinpath('accuracy_plot.png'))
         
      
         
     
     
 if __name__ == "__main__":
+    arg = sys.argv[1].split()
+    
+    
+    PRODUCTION = arg[0]
+    MODEL_PATH = arg[1]
+    PLOT = arg[2]
+    SAVE_SENSORS = arg[3]
+    SAVE_LABELS = arg[4]
+    VERBOSE = arg[5]
+
+
+    print(f"PRODUCTION: {PRODUCTION}")
+    print(f"MODEL_PATH: {MODEL_PATH}")
+    print(f"PLOT: {PLOT}")
+    print(f"SAVE_SENSORS: {SAVE_SENSORS}")
+    print(f"SAVE_LABELS: {SAVE_LABELS}")
+    print(f"VERBOSE: {VERBOSE}")
+
     my_robot = Robot()
+
     run_robot(my_robot)
 
 
-"""
-provare inclinazione metti features dell'inclinazione e ritraina modello
-random forest funziona sicuro
-hat
-provare ad esempio a salvarsi e a ritornare 
-cnn prendere il layer -1 di una cnn e farci featurese usare river
-"""
 
+
+#               main
+#       code        models       data         plots
+#                             data     labels
+#
+#
+#
+#

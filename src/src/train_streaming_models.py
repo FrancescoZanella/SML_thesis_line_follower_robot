@@ -1,0 +1,90 @@
+import pandas as pd
+import logging
+import argparse
+import os
+from sklearn.model_selection import train_test_split
+from pathlib import Path
+from river import tree, metrics, forest, neighbors,ensemble, naive_bayes, stream
+from river.evaluate import progressive_val_score
+from river.stream import iter_sklearn_dataset
+import pickle
+
+
+
+
+LOGGING_FORMATTER = "%(asctime)s:%(name)s:%(levelname)s: %(message)s"
+
+
+def main(dataset_path, output_dir,model_name, evaluate):
+    
+    
+    logging.info("Starting to load the dataset")
+    logging.info(f"Dataset path: {dataset_path}")
+
+    column_names = [f'ir_{x}' for x in range(0,7)]
+    column_names.append('target')
+    df = pd.read_csv(dataset_path) 
+    df.columns = column_names
+
+    
+    models = {
+        'naive_bayes': naive_bayes.GaussianNB(),
+        'knn': neighbors.KNNClassifier(),
+        'ht': tree.HoeffdingTreeClassifier(),
+        'hat': tree.HoeffdingAdaptiveTreeClassifier(),
+        'bagging': ensemble.BaggingClassifier(model=tree.HoeffdingTreeClassifier()),
+        'leveraging_bagging': ensemble.LeveragingBaggingClassifier(model=tree.HoeffdingTreeClassifier()),
+        'arf': forest.ARFClassifier(),
+        'srp': ensemble.SRPClassifier(),
+        'adwin_bagging': ensemble.ADWINBaggingClassifier(model=tree.HoeffdingTreeClassifier())
+    }
+    column_names = [f'ir_{x}' for x in range(0,7)]
+    model = models[model_name]
+    metric = metrics.Accuracy()
+    streams = stream.iter_pandas(X=df[column_names], y=df['target'])
+
+    progressive_val_score(dataset=streams, 
+                      model=model, 
+                      metric=metric, 
+                      print_every=1000)
+
+       
+    logging.info(f'Accuracy: {metric}')
+    
+    with open(output_dir, 'wb') as f:
+        pickle.dump(model, f)
+
+    logging.info(f'Saved model at: {output_dir}')
+    
+    
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description="Training script for streaming models")
+    parser.add_argument("-output_dir", default=None, type=str,
+                        help="The directory where to save the model")
+    parser.add_argument("-dataset_path", default=None, type=str, required=True,
+                        help="Directory where the dataset is placed")
+    parser.add_argument("-model_name", default=None, type=str, required=True, choices=['naive_bayes','knn','ht', 'hat', 'bagging', 'leveraging_bagging', 'arf','adwin_bagging','srp' ],
+                        help="model type to be trained")
+    parser.add_argument("-evaluate", default=False, type=str,
+                        help="True if you wan to to evaluate the model")
+    args = parser.parse_args()
+    OUTPUT_DIR = Path(args.output_dir)
+    DATASET_DIR = Path(args.dataset_path)
+    MODEL_NAME = args.model_name
+    EVALUATE = args.evaluate
+    
+    
+    
+    
+     
+    
+    log_path = OUTPUT_DIR / "log.txt"
+    logging.basicConfig(format=LOGGING_FORMATTER, level=logging.INFO, force=True)
+    
+    stdout_handler = logging.StreamHandler()
+    stdout_handler.setFormatter(logging.Formatter(LOGGING_FORMATTER))
+
+    root_logger = logging.getLogger()
+    root_logger.addHandler(stdout_handler)
+    
+    main(DATASET_DIR, OUTPUT_DIR,MODEL_NAME,EVALUATE)

@@ -121,7 +121,6 @@ def run_robot(robot):
         # load the model trained on classic environment
         pretrained_model,metric = load_model()
 
-   
     create_directories()
     while robot.step(TIME_STEP) != -1:
            
@@ -168,14 +167,15 @@ def run_robot(robot):
         control_robot(y_pred,left_motor,right_motor,left_speed,right_speed)
         
     
-    
-    ## da qui in poi non sembra venga eseguito questo codice
+
     if SAVE_LABELS == 'True' and PRODUCTION == 'False':
         # save labels
-        save_data(Path(MODEL_PATH).parent.parent.joinpath('data').joinpath('labels'), labels,"true_labels")
+        save_data(Path(MODEL_PATH).parent.parent.joinpath('data').joinpath('labels'),labels,"true_labels")
     if SAVE_SENSORS == 'True' and PRODUCTION == 'False':
         # save data to train ml model
-        save_data(Path(MODEL_PATH).parent.parent.joinpath('data').joinpath('sensors_data'), sensors_data,"sensor_data")
+        for i in range(len(sensors_data)):
+            sensors_data[i].append(labels[i])
+        save_data(Path(MODEL_PATH).parent.parent.joinpath('data').joinpath('sensors_data'),sensors_data,"sensor_data")
 
     
     if PLOT == 'True' and PRODUCTION == 'True':

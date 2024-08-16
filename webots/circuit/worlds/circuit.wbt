@@ -9,8 +9,8 @@ WorldInfo {
   basicTimeStep 16
 }
 Viewpoint {
-  orientation -0.24535942710001007 -0.008521881269431222 0.9693947230477298 3.208917240545459
-  position 4.400968473417628 0.6079783980432866 2.7253839205331967
+  orientation -0.16711178738673194 -0.0007880253894423675 0.9859376397787017 3.1509080002346024
+  position 6.291612006931746 1.422469573692947 2.730725039984079
   follow "complete"
 }
 TexturedBackground {
@@ -22,35 +22,24 @@ DEF floor RectangleArena {
   floorSize 2 2
   floorTileSize 0.25 0.25
   floorAppearance PBRAppearance {
+    baseColor 0.9058823529411765 0.9058823529411765 0.9058823529411765
+    metalness 0
+  }
+  wallHeight 0.05
+}
+RectangleArena {
+  translation -0.00951962 2.20933 3.10863e-15
+  name "train"
+  floorSize 2 2
+  floorTileSize 0.25 0.25
+  floorAppearance PBRAppearance {
+    baseColor 0.9058823529411765 0.9058823529411765 0.9058823529411765
     metalness 0
   }
   wallHeight 0.05
 }
 Solid {
-  translation -1.68418 3.17458 -2.04281e-14
-  children [
-    Transform {
-      scale 0.028 0.028 0.001
-      children [
-        Shape {
-          appearance PBRAppearance {
-            baseColor 0 0 0
-            roughness 1
-            metalness 0
-          }
-          geometry Mesh {
-            url [
-              "../../training_circuit/tinker.obj"
-            ]
-          }
-        }
-      ]
-    }
-  ]
-  name "train"
-}
-Solid {
-  translation 0.25525 1.36507 -4.35207e-14
+  translation 0.232066 1.44088 -4.35207e-14
   children [
     Transform {
       scale 0.028 0.028 0.001
@@ -72,14 +61,48 @@ Solid {
   ]
   name "test"
 }
+Solid {
+  translation 0.813024 3.96836 -4.26325e-14
+  children [
+    Transform {
+      scale 0.028 0.028 0.001
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0 0 0
+            roughness 1
+            metalness 0
+          }
+          geometry Mesh {
+            url [
+              "../../complex/tinker.obj"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+  name "complex"
+}
 DEF my_epuck E-puck {
-  translation -0.436424 0.317261 -3.11225e-05
-  rotation -0.005507075627258616 0.0018859382529527217 0.9999830575339471 2.4255291012249267
+  hidden position_0_0 418.5706070149601
+  hidden position_0_1 359.6884063392252
+  hidden linearVelocity_0 0.06653434048497922 0.03856936089236466 -0.0010084980451456117
+  hidden angularVelocity_0 -0.04192733110520956 0.017815812408872388 0.11292776427665006
+  hidden rotation_1 0 1 0 3.880376741107396
+  hidden linearVelocity_1 0.0666795061652895 0.03532987814184335 -0.0008323705985297283
+  hidden angularVelocity_1 -1.7792889306805169 3.369511788283171 0.5160489658896549
+  hidden rotation_2 0 -0.9999999999999999 0 4.73634147719082
+  hidden linearVelocity_2 0.06928841442872065 0.04004527704540818 -0.00013007400293000657
+  hidden angularVelocity_2 -1.536443339172729 3.4766471192061776 0.14106840665269293
+  translation -0.42465576799794247 0.6792155954847009 0.00015652208581409983
+  rotation 0.018343613236445747 -0.012360119462955873 0.9997553397208204 0.4078066197249568
   name "complete"
   controller "complete"
   controllerArgs [
-    "True C:\\Users\\franc\\Desktop\\TESI\\SML_thesis_line_follower_robot\\webots\\data\\models\\hat_2024-08-16_13-54-32.pkl True True True True"
+    "True C:\\Users\\franc\\Desktop\\TESI\\SML_thesis_line_follower_robot\\webots\\data\\models\\arf_2024-08-16_17-16-12.pkl True True True False"
   ]
+  window "<none>"
   groundSensorsSlot [
     LightSensor {
       name "light_sensor"
@@ -129,6 +152,6 @@ DEF my_epuck E-puck {
 }
 Robot {
   name "supervisor"
-  controller "<none>"
+  controller "supervisor"
   supervisor TRUE
 }

@@ -31,7 +31,7 @@ while robot.step(TIME_STEP) != -1:
     #print(f'enter_{j}')
     base_color_field.setSFColor([rgb/255,rgb/255,rgb/255])
     #print(rgb/255,rgb/255,rgb/255)
-    if rgb < 120:
+    if rgb < 180:
       down = False
     if rgb > 254:
       down = True

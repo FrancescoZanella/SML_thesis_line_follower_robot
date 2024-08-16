@@ -2,12 +2,13 @@
 
 from controller import Robot
 import numpy as np
-from river import metrics
+from river import metrics,drift
 import pickle
 import matplotlib.pyplot as plt
 import datetime
 from pathlib import Path
 import sys
+import csv
 
 
 
@@ -48,7 +49,14 @@ def save_data(path, data, type):
     print(f'Saving data to {path}')
     np.savetxt(str(Path(path).joinpath(file_name)), np.array(data), delimiter=',')
 
-    
+def load_true_labels():
+    with open('C:\\Users\\franc\\Desktop\\TESI\\SML_thesis_line_follower_robot\\webots\\data\\data\\labels\\square_true_labels.csv', mode='r') as file:
+        csv_reader = csv.reader(file)
+        next(csv_reader)
+        l = [float(riga[0]) for riga in csv_reader] 
+
+    return l
+
 def load_label(irs_values):
     line_not_detected = np.array([value >= 100 or value <= 5 for value in irs_values])
             
@@ -117,11 +125,17 @@ def run_robot(robot):
     sensors_data = []
 
     sensors,left_motor,right_motor = initialize_devices(robot)
+    
     if PRODUCTION == 'True':
         # load the model trained on classic environment
         pretrained_model,metric = load_model()
+        adwin = drift.ADWIN()
 
     create_directories()
+
+    l = load_true_labels()
+    i = 0
+    
     while robot.step(TIME_STEP) != -1:
            
 
@@ -142,19 +156,19 @@ def run_robot(robot):
             # use the model to predict how the model should move
             y_pred = pretrained_model.predict_one(X)
             
-            ### TODO LOGIC TO OBTAIN TRUE LABELS
-            y = load_label(irs_values)
-            
+            y = l[i]
             labels.append(y)
             
             if VERBOSE == 'True':
                 print(f'Predicted label: {couple[int(y_pred)]}')
                 print(f'True label: {couple[int(y)]}')
 
-            #update the model      
-            pretrained_model.learn_one(X, y)    
-            metric.update(y, y_pred)
+            adwin.update(int(y_pred == y))
 
+            if adwin.drift_detected:
+                print("Change detected, updating model...")
+                pretrained_model.learn_one(X, y)
+            
             if VERBOSE == 'True':
                 print(f'Accuracy: {metric.get()}')
             
@@ -166,6 +180,7 @@ def run_robot(robot):
 
         
         control_robot(y_pred,left_motor,right_motor,left_speed,right_speed)
+        i += 1 
         
     
 

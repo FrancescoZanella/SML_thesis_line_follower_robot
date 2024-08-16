@@ -142,6 +142,7 @@ def run_robot(robot):
             # use the model to predict how the model should move
             y_pred = pretrained_model.predict_one(X)
             
+            ### TODO LOGIC TO OBTAIN TRUE LABELS
             y = load_label(irs_values)
             
             labels.append(y)
@@ -151,13 +152,13 @@ def run_robot(robot):
                 print(f'True label: {couple[int(y)]}')
 
             #update the model      
-            pretrained_model.learn_one(X, y)    
-            metric.update(y, y_pred)
+            #pretrained_model.learn_one(X, y)    
+            #metric.update(y, y_pred)
 
             if VERBOSE == 'True':
                 print(f'Accuracy: {metric.get()}')
             
-            accuracy_log.append(metric.get())
+            #accuracy_log.append(metric.get())
         else:
             # move the robot using the "pid" way
             y_pred = load_label(irs_values)

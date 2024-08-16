@@ -10,7 +10,7 @@ WorldInfo {
 }
 Viewpoint {
   orientation -0.24535942710001007 -0.008521881269431222 0.9693947230477298 3.208917240545459
-  position 4.032490956268782 0.5823466853397881 2.525607445410955
+  position 4.400968473417628 0.6079783980432866 2.7253839205331967
   follow "complete"
 }
 TexturedBackground {
@@ -27,7 +27,7 @@ DEF floor RectangleArena {
   wallHeight 0.05
 }
 Solid {
-  translation 0.205915 0.361751 -1.90958e-14
+  translation -1.68418 3.17458 -2.04281e-14
   children [
     Transform {
       scale 0.028 0.028 0.001
@@ -49,13 +49,36 @@ Solid {
   ]
   name "train"
 }
+Solid {
+  translation 0.25525 1.36507 -4.35207e-14
+  children [
+    Transform {
+      scale 0.028 0.028 0.001
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0 0 0
+            roughness 1
+            metalness 0
+          }
+          geometry Mesh {
+            url [
+              "../../test_circuit/tinker.obj"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+  name "test"
+}
 DEF my_epuck E-puck {
-  translation -0.6941465441490671 0.27548637010946697 -3.1122526296435e-05
+  translation -0.436424 0.317261 -3.11225e-05
   rotation -0.005507075627258616 0.0018859382529527217 0.9999830575339471 2.4255291012249267
   name "complete"
   controller "complete"
   controllerArgs [
-    "False C:\\Users\\franc\\Desktop\\TESI\\SML_thesis_line_follower_robot\\webots\\data\\models\\model_knn.pkl True True True False"
+    "True C:\\Users\\franc\\Desktop\\TESI\\SML_thesis_line_follower_robot\\webots\\data\\models\\hat_2024-08-16_13-54-32.pkl True True True True"
   ]
   groundSensorsSlot [
     LightSensor {

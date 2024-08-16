@@ -55,7 +55,7 @@ DEF my_epuck E-puck {
   name "complete"
   controller "complete"
   controllerArgs [
-    "True C:\\Users\\franc\\Desktop\\TESI\\SML_thesis_line_follower_robot\\webots\\models\\model_knn.pkl True True True False"
+    "True C:\\Users\\franc\\Desktop\\TESI\\SML_thesis_line_follower_robot\\webots\\src\\models\\model_knn.pkl True True True False"
   ]
   groundSensorsSlot [
     LightSensor {

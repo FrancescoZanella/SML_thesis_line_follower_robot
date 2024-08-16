@@ -63,6 +63,7 @@ def load_label(irs_values):
         return 0
 
 def create_directories():
+
     # Ensure that the directories for data and plots exist
     base_path = Path(MODEL_PATH).parent.parent
     data_path = base_path.joinpath('data')
@@ -110,9 +111,7 @@ def control_robot(prediction,left_motor,right_motor,left_speed,right_speed):
         
 
 def run_robot(robot):
-    
-    
-    
+        
     accuracy_log = []
     labels = []
     sensors_data = []
@@ -122,6 +121,7 @@ def run_robot(robot):
         # load the model trained on classic environment
         pretrained_model,metric = load_model()
 
+   
     create_directories()
     while robot.step(TIME_STEP) != -1:
            
@@ -177,23 +177,9 @@ def run_robot(robot):
         # save data to train ml model
         save_data(Path(MODEL_PATH).parent.parent.joinpath('data').joinpath('sensors_data'), sensors_data,"sensor_data")
 
-
-        
-        
-
-            
-       
-        
-        
-        
-        
-
-        
-        
-    
-        
     
     if PLOT == 'True' and PRODUCTION == 'True':
+        file_name = f'{datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.png'
         plt.figure(figsize=(10, 5))
         plt.plot(accuracy_log, label='Accuracy')
         plt.xlabel('Time Step')
@@ -201,7 +187,7 @@ def run_robot(robot):
         plt.title('Accuracy over Time')
         plt.legend()
         plt.grid(True)
-        plt.savefig(Path(MODEL_PATH).parent.parent.joinpath('plots').joinpath('accuracy_plot.png'))
+        plt.savefig(Path(MODEL_PATH).parent.parent.joinpath('plots').joinpath(file_name))
         
      
         
@@ -209,7 +195,6 @@ def run_robot(robot):
     
 if __name__ == "__main__":
     arg = sys.argv[1].split()
-    
     
     PRODUCTION = arg[0]
     MODEL_PATH = arg[1]
@@ -229,14 +214,3 @@ if __name__ == "__main__":
     my_robot = Robot()
 
     run_robot(my_robot)
-
-
-
-
-#               main
-#       code        models       data         plots
-#                             data     labels
-#
-#
-#
-#

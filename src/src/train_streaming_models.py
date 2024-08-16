@@ -1,7 +1,7 @@
 import pandas as pd
 import logging
 import argparse
-import os
+import datetime
 from sklearn.model_selection import train_test_split
 from pathlib import Path
 from river import tree, metrics, forest, neighbors,ensemble, naive_bayes, stream
@@ -42,7 +42,7 @@ def main(dataset_path, output_dir,model_name, evaluate):
     model = models[model_name]
     metric = metrics.Accuracy()
     streams = stream.iter_pandas(X=df[column_names], y=df['target'])
-
+    logging.info(f'TRAINING MODEL {model_name}')
     progressive_val_score(dataset=streams, 
                       model=model, 
                       metric=metric, 
@@ -50,8 +50,9 @@ def main(dataset_path, output_dir,model_name, evaluate):
 
        
     logging.info(f'Accuracy: {metric}')
-    
-    with open(output_dir, 'wb') as f:
+    file_name = f'{datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}'
+    out = output_dir.joinpath(f'{model_name}_{file_name}.pkl')
+    with open(out, 'wb') as f:
         pickle.dump(model, f)
 
     logging.info(f'Saved model at: {output_dir}')
@@ -81,10 +82,6 @@ if __name__ == '__main__':
     log_path = OUTPUT_DIR / "log.txt"
     logging.basicConfig(format=LOGGING_FORMATTER, level=logging.INFO, force=True)
     
-    stdout_handler = logging.StreamHandler()
-    stdout_handler.setFormatter(logging.Formatter(LOGGING_FORMATTER))
-
-    root_logger = logging.getLogger()
-    root_logger.addHandler(stdout_handler)
+    
     
     main(DATASET_DIR, OUTPUT_DIR,MODEL_NAME,EVALUATE)

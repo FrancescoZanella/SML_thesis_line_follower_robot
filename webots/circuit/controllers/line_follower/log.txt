@@ -1,7 +1,0 @@
-2024-07-09 10:08:27,892:root:INFO: Starting to load the dataset
-2024-07-09 10:08:27,893:root:INFO: Dataset path: /mnt/c/Users/franc/Desktop/TESI/webots/circuit/controllers/line_follower/sensor_data.csv
-2024-07-09 10:08:28,008:root:INFO: We have turned straight 3326 times!
-2024-07-09 10:08:28,009:root:INFO: We have turned right 416 times!
-2024-07-09 10:08:28,011:root:INFO: We have turned left 311 times!
-2024-07-09 10:08:28,045:root:INFO: Accuracy on test set: 1.00
-2024-07-09 10:08:28,065:root:INFO: Saved model at: /mnt/c/Users/franc/Desktop/TESI/webots/circuit/controllers/line_follower

@@ -152,13 +152,13 @@ def run_robot(robot):
                 print(f'True label: {couple[int(y)]}')
 
             #update the model      
-            #pretrained_model.learn_one(X, y)    
-            #metric.update(y, y_pred)
+            pretrained_model.learn_one(X, y)    
+            metric.update(y, y_pred)
 
             if VERBOSE == 'True':
                 print(f'Accuracy: {metric.get()}')
             
-            #accuracy_log.append(metric.get())
+            accuracy_log.append(metric.get())
         else:
             # move the robot using the "pid" way
             y_pred = load_label(irs_values)

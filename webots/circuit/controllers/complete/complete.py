@@ -163,11 +163,11 @@ def run_robot(robot):
                 print(f'Predicted label: {couple[int(y_pred)]}')
                 print(f'True label: {couple[int(y)]}')
 
-            adwin.update(int(y_pred == y))
+            #adwin.update(int(y_pred == y))
 
-            if adwin.drift_detected:
-                print("Change detected, updating model...")
-                pretrained_model.learn_one(X, y)
+            #if adwin.drift_detected:
+            #    print("Change detected, updating model...")
+            #pretrained_model.learn_one(X, y)
             
             if VERBOSE == 'True':
                 print(f'Accuracy: {metric.get()}')

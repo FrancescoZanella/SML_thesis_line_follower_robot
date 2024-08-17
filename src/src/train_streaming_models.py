@@ -4,7 +4,7 @@ import argparse
 import datetime
 from sklearn.model_selection import train_test_split
 from pathlib import Path
-from river import tree, metrics, forest, neighbors,ensemble, naive_bayes, stream
+from river import tree, metrics, forest, neighbors,ensemble, naive_bayes, stream, drift
 from river.evaluate import progressive_val_score
 from river.stream import iter_sklearn_dataset
 import pickle
@@ -29,13 +29,17 @@ def main(dataset_path, output_dir,model_name, evaluate):
     
     models = {
         'naive_bayes': naive_bayes.GaussianNB(),
-        'knn': neighbors.KNNClassifier(),
+        'knn': neighbors.KNNClassifier(n_neighbors=10),
         'ht': tree.HoeffdingTreeClassifier(),
         'hat': tree.HoeffdingAdaptiveTreeClassifier(),
         'bagging': ensemble.BaggingClassifier(model=tree.HoeffdingTreeClassifier()),
         'leveraging_bagging': ensemble.LeveragingBaggingClassifier(model=tree.HoeffdingTreeClassifier()),
         'arf': forest.ARFClassifier(),
-        'srp': ensemble.SRPClassifier(),
+        'srp': ensemble.SRPClassifier(model=tree.HoeffdingTreeClassifier(),
+                      n_models=10,
+                      drift_detector=drift.ADWIN(delta=0.001),
+                      warning_detector=drift.ADWIN(delta=0.01),
+                      seed=42),
         'adwin_bagging': ensemble.ADWINBaggingClassifier(model=tree.HoeffdingTreeClassifier())
     }
     column_names = [f'ir_{x}' for x in range(0,7)]

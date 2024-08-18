@@ -22,7 +22,6 @@ DEF floor RectangleArena {
   floorSize 2 2
   floorTileSize 0.25 0.25
   floorAppearance PBRAppearance {
-    baseColor 0.8392156862745098 0.8392156862745098 0.8392156862745098
     metalness 0
   }
   wallHeight 0.05
@@ -77,11 +76,14 @@ DEF my_epuck E-puck {
   translation -0.42465576799794247 0.6792155954847009 0.00015652208581409983
   rotation 0.018343613236445747 -0.012360119462955873 0.9997553397208204 0.4078066197249568
   name "complete"
-  controller "complete"
+  controller "controller_with_camera"
   controllerArgs [
-    "True C:\\Users\\franc\\Desktop\\TESI\\SML_thesis_line_follower_robot\\webots\\data\\models\\arf_2024-08-16_17-16-12.pkl True True True False"
+    "True C:\\Users\\franc\\Desktop\\TESI\\SML_thesis_line_follower_robot\\webots\\data\\models\\98.57_leveraging_bagging_2024-08-17_11-55-08.pkl True True True False False"
   ]
   window "<none>"
+  camera_width 48
+  camera_height 48
+  camera_rotation 0 1 0 0.2617996938995747
   groundSensorsSlot [
     LightSensor {
       name "light_sensor"
@@ -131,6 +133,6 @@ DEF my_epuck E-puck {
 }
 Robot {
   name "supervisor"
-  controller "supervisor"
+  controller "<none>"
   supervisor TRUE
 }

@@ -10,7 +10,7 @@ WorldInfo {
 }
 Viewpoint {
   orientation -0.16711178738673194 -0.0007880253894423675 0.9859376397787017 3.1509080002346024
-  position 7.074108730031619 1.4298633833886003 3.0038421775757174
+  position 7.268346582693637 0.42163411058856587 3.0047730544098283
   follow "complete"
 }
 TexturedBackground {
@@ -73,17 +73,22 @@ Solid {
   name "complex"
 }
 DEF my_epuck E-puck {
-  translation -0.42465576799794247 0.6792155954847009 0.00015652208581409983
-  rotation 0.018343613236445747 -0.012360119462955873 0.9997553397208204 0.4078066197249568
+  hidden position_0_0 309.0569271017257
+  hidden position_0_1 279.412675863808
+  hidden rotation_1 0 -1 0 5.102338257253619
+  hidden rotation_2 0 1 0 2.9525223479061715
+  translation -0.28377093069745635 -0.326900127588001 -3.1962144888191685e-05
+  rotation 0.0006899537416973857 2.1304268512192647e-06 0.9999997619796194 -3.1354158332868973
   name "complete"
   controller "controller_with_camera"
   controllerArgs [
-    "True C:\\Users\\franc\\Desktop\\TESI\\SML_thesis_line_follower_robot\\webots\\data\\models\\98.57_leveraging_bagging_2024-08-17_11-55-08.pkl True True True False False"
+    "False C:\\Users\\franc\\Desktop\\TESI\\SML_thesis_line_follower_robot\\webots\\data\\models\\98.57_leveraging_bagging_2024-08-17_11-55-08.pkl True True True True False"
   ]
   window "<none>"
+  camera_fieldOfView 2
   camera_width 48
   camera_height 48
-  camera_rotation 0 1 0 0.2617996938995747
+  camera_rotation 0 1 0 0.5235996938995747
   groundSensorsSlot [
     LightSensor {
       name "light_sensor"

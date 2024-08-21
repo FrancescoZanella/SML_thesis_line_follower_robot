@@ -80,14 +80,12 @@ def create_directories():
     # Ensure that the directories for data and plots exist
     base_path = Path(MODEL_PATH).parent.parent
     data_path = base_path.joinpath('data')
-    labels_path = data_path.joinpath('labels')
     sensors_data_path = data_path.joinpath('sensors_data')
     plots_path = base_path.joinpath('plots')
     images_path = base_path.joinpath('images')
 
     # Create directories if they don't exist
     data_path.mkdir(parents=True, exist_ok=True)
-    labels_path.mkdir(parents=True, exist_ok=True)
     sensors_data_path.mkdir(parents=True, exist_ok=True)
     plots_path.mkdir(parents=True, exist_ok=True)
     images_path.mkdir(parents=True,exist_ok=True)
@@ -207,10 +205,6 @@ def run_robot(robot):
         i += 1 
         
     
-
-    if SAVE_LABELS == 'True' and PRODUCTION == 'False':
-        # save labels
-        save_data(Path(MODEL_PATH).parent.parent.joinpath('data').joinpath('labels'),labels,"true_labels")
     if SAVE_SENSORS == 'True' and PRODUCTION == 'False':
         # save data to train ml model
         for i in range(len(sensors_data)):
@@ -240,16 +234,14 @@ if __name__ == "__main__":
     MODEL_PATH = arg[1]
     PLOT = arg[2]
     SAVE_SENSORS = arg[3]
-    SAVE_LABELS = arg[4]
-    SAVE_IMAGES = arg[5]
-    VERBOSE = arg[6]
+    SAVE_IMAGES = arg[4]
+    VERBOSE = arg[5]
 
 
     print(f"PRODUCTION: {PRODUCTION}")
     print(f"MODEL_PATH: {MODEL_PATH}")
     print(f"PLOT: {PLOT}")
     print(f"SAVE_SENSORS: {SAVE_SENSORS}")
-    print(f"SAVE_LABELS: {SAVE_LABELS}")
     print(f'SAVE_IMAGES: {SAVE_IMAGES}')
     print(f"VERBOSE: {VERBOSE}")
 

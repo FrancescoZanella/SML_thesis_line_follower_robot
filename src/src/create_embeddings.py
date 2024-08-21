@@ -19,7 +19,7 @@ from tqdm import tqdm
 LOGGING_FORMATTER = "%(asctime)s:%(name)s:%(levelname)s: %(message)s"
 
 
-def main(dataset_path, output_dir, image_folder,model_path,umap,n_components):
+def main(dataset_path, output_dir, image_folder,model_path,dimensionality_reduction,n_components):
     
     
     logging.info("Starting to load the dataset")
@@ -58,14 +58,14 @@ def main(dataset_path, output_dir, image_folder,model_path,umap,n_components):
     
     
     # add the full embeddings
-    if umap == 'False':
+    if dimensionality_reduction == 'False':
         df_emb = pd.DataFrame(embeddings_list, columns=[f'embedding_{i+1}' for i in range(216)])
         df_emb.insert(0, 'index', indices)
         df_emb = df_emb.sort_values(by='index')
         df_tot = pd.merge(df, df_emb, on='index', how='inner').drop('index',axis=1)
 
         df_tot.to_csv(output_dir,index=False)
-    elif umap == 'True':
+    elif dimensionality_reduction == 'True':
         reducer = umap.UMAP(n_components=n_components)
         embedding_2d = reducer.fit_transform(embeddings_list)
 
@@ -99,7 +99,7 @@ if __name__ == '__main__':
     DATASET_DIR = args.dataset_path
     IMAGES_PATH = args.images_path
     MODEL_PATH = args.model_path
-    UMAP = args.dimensionality_reduction
+    dimensionality_reduction = args.dimensionality_reduction
     N_COMPONENTS = int(args.n_components)
 
     
@@ -111,4 +111,4 @@ if __name__ == '__main__':
     
     
     
-    main(DATASET_DIR, OUTPUT_DIR,IMAGES_PATH,MODEL_PATH,UMAP,N_COMPONENTS)
+    main(DATASET_DIR, OUTPUT_DIR,IMAGES_PATH,MODEL_PATH,dimensionality_reduction,N_COMPONENTS)

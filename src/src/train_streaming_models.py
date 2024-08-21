@@ -21,12 +21,11 @@ def main(dataset_path, output_dir,model_name, evaluate):
     logging.info("Starting to load the dataset")
     logging.info(f"Dataset path: {dataset_path}")
 
-    column_names = [f'ir_{x}' for x in range(0,7)]
-    column_names.append('target')
-    df = pd.read_csv(dataset_path) 
-    df.columns = column_names
-
     
+    df = pd.read_csv(dataset_path)
+    column_names = df.drop('target',axis=1).columns
+
+    logging.info(f"Number of columns: {len(df.columns)}")
     models = {
         'naive_bayes': naive_bayes.GaussianNB(),
         'knn': neighbors.KNNClassifier(n_neighbors=10),
@@ -42,7 +41,6 @@ def main(dataset_path, output_dir,model_name, evaluate):
                       seed=42),
         'adwin_bagging': ensemble.ADWINBaggingClassifier(model=tree.HoeffdingTreeClassifier())
     }
-    column_names = [f'ir_{x}' for x in range(0,7)]
     model = models[model_name]
     metric = metrics.Accuracy()
     streams = stream.iter_pandas(X=df[column_names], y=df['target'])

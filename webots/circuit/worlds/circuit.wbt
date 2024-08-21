@@ -10,7 +10,7 @@ WorldInfo {
 }
 Viewpoint {
   orientation -0.3373961963171532 -0.0005381204338868751 0.9413625853713944 3.1446038308769326
-  position 3.5419886517222543 -0.38034859720671316 3.495454450405332
+  position 7.193419475751902 -0.36866377700758945 6.498701148662409
   follow "complete"
 }
 TexturedBackground {
@@ -75,16 +75,14 @@ Solid {
 DEF my_epuck E-puck {
   hidden position_0_0 309.0569271017257
   hidden position_0_1 279.412675863808
-  hidden translation_1 0 0.02599999999999997 0.02
   hidden rotation_1 0 -1 0 5.102338257253619
-  hidden translation_2 0 -0.026 0.02
   hidden rotation_2 0 1 0 2.9525223479061715
   translation -0.2181750865837763 -0.46529743103314475 -3.237558649216675e-05
   rotation 5.6450136161473186e-05 5.689393013465543e-06 -0.9999999983905065 -3.0783907718600405
   name "complete"
   controller "controller_with_camera"
   controllerArgs [
-    "False C:\\Users\\franc\\Desktop\\TESI\\SML_thesis_line_follower_robot\\webots\\data\\models\\97.22_arf_2024-08-17_11-48-32.pkl False True True True False"
+    "True C:\\Users\\franc\\Desktop\\TESI\\SML_thesis_line_follower_robot\\webots\\data\\models\\97.22_arf_2024-08-17_11-48-32.pkl False False False False False"
   ]
   window "<none>"
   camera_fieldOfView 2

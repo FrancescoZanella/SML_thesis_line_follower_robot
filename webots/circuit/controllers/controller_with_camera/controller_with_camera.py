@@ -179,8 +179,8 @@ def run_robot(robot):
             # use the model to predict how the model should move
             y_pred = pretrained_model.predict_one(X)
 
-            y = l[i]
-            #y = load_label(irs_values)
+            #y = l[i]
+            y = load_label(irs_values)
             labels.append(y)
             
             metric.update(y, y_pred)
@@ -189,8 +189,8 @@ def run_robot(robot):
                 print(f'Predicted label: {couple[int(y_pred)]}')
                 print(f'True label: {couple[int(y)]}')
 
-            if i % update_frequency == 0:
-                pretrained_model.learn_one(X, y)
+            #if i % update_frequency == 0:
+            #    pretrained_model.learn_one(X, y)
             
             if VERBOSE == 'True':
                 print(f'Accuracy: {metric.get()}')

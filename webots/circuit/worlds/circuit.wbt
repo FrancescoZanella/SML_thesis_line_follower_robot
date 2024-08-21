@@ -9,8 +9,8 @@ WorldInfo {
   basicTimeStep 16
 }
 Viewpoint {
-  orientation -0.16711178738673194 -0.0007880253894423675 0.9859376397787017 3.1509080002346024
-  position 7.268346582693637 0.42163411058856587 3.0047730544098283
+  orientation -0.3373961963171532 -0.0005381204338868751 0.9413625853713944 3.1446038308769326
+  position 3.5419886517222543 -0.38034859720671316 3.495454450405332
   follow "complete"
 }
 TexturedBackground {
@@ -27,7 +27,7 @@ DEF floor RectangleArena {
   wallHeight 0.05
 }
 Solid {
-  translation 0.232066 1.44088 -4.35207e-14
+  translation 0.0358012 1.3062 -2.26485e-14
   children [
     Transform {
       scale 0.028 0.028 0.001
@@ -50,7 +50,7 @@ Solid {
   name "test"
 }
 Solid {
-  translation 0.813024 3.96836 -4.26325e-14
+  translation -0.0673546 4.61718 -4.52971e-14
   children [
     Transform {
       scale 0.028 0.028 0.001
@@ -75,14 +75,16 @@ Solid {
 DEF my_epuck E-puck {
   hidden position_0_0 309.0569271017257
   hidden position_0_1 279.412675863808
+  hidden translation_1 0 0.02599999999999997 0.02
   hidden rotation_1 0 -1 0 5.102338257253619
+  hidden translation_2 0 -0.026 0.02
   hidden rotation_2 0 1 0 2.9525223479061715
-  translation -0.28377093069745635 -0.326900127588001 -3.1962144888191685e-05
-  rotation 0.0006899537416973857 2.1304268512192647e-06 0.9999997619796194 -3.1354158332868973
+  translation -0.2181750865837763 -0.46529743103314475 -3.237558649216675e-05
+  rotation 5.6450136161473186e-05 5.689393013465543e-06 -0.9999999983905065 -3.0783907718600405
   name "complete"
   controller "controller_with_camera"
   controllerArgs [
-    "False C:\\Users\\franc\\Desktop\\TESI\\SML_thesis_line_follower_robot\\webots\\data\\models\\98.57_leveraging_bagging_2024-08-17_11-55-08.pkl True True True True False"
+    "False C:\\Users\\franc\\Desktop\\TESI\\SML_thesis_line_follower_robot\\webots\\data\\models\\97.22_arf_2024-08-17_11-48-32.pkl False True True True False"
   ]
   window "<none>"
   camera_fieldOfView 2

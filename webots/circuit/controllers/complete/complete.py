@@ -133,7 +133,7 @@ def run_robot(robot):
 
     create_directories()
 
-    l = load_true_labels()
+    
     i = 0
     
     while robot.step(TIME_STEP) != -1:
@@ -156,17 +156,15 @@ def run_robot(robot):
             # use the model to predict how the model should move
             y_pred = pretrained_model.predict_one(X)
             
-            y = l[i]
+            y = load_label(irs_values)
             labels.append(y)
+
+            metric.update(y, y_pred)
             
             if VERBOSE == 'True':
                 print(f'Predicted label: {couple[int(y_pred)]}')
                 print(f'True label: {couple[int(y)]}')
 
-            #adwin.update(int(y_pred == y))
-
-            #if adwin.drift_detected:
-            #    print("Change detected, updating model...")
             #pretrained_model.learn_one(X, y)
             
             if VERBOSE == 'True':

@@ -27,19 +27,19 @@ j = 0
 rgb = 255
 down = True
 while robot.step(TIME_STEP) != -1:
-  if j % 10 == 0:
+  if j % 1000 == 0:
     #print(f'enter_{j}')
     base_color_field.setSFColor([rgb/255,rgb/255,rgb/255])
     #print(rgb/255,rgb/255,rgb/255)
-    if rgb < 180:
+    if rgb < 160:
       down = False
     if rgb > 254:
       down = True
 
     if down:
-      rgb=rgb-1
+      rgb=rgb-30
     else:
-      rgb=rgb+1
+      rgb=rgb+30
   else:
     #print(j)
     #print(rgb/255,rgb/255,rgb/255)

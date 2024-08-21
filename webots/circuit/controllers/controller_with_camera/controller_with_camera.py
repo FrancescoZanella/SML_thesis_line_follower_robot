@@ -55,7 +55,7 @@ def save_data(path, data, type):
     np.savetxt(str(Path(path).joinpath(file_name)), np.array(data), delimiter=',')
 
 def load_true_labels():
-    with open('C:\\Users\\franc\\Desktop\\TESI\\SML_thesis_line_follower_robot\\webots\\data\\data\\labels\\square_true_labels.csv', mode='r') as file:
+    with open('C:\\Users\\franc\\Desktop\\TESI\\SML_thesis_line_follower_robot\\webots\\data\\data\\labels\\true_labels 2024-08-20_16-27-05.csv', mode='r') as file:
         csv_reader = csv.reader(file)
         next(csv_reader)
         l = [float(riga[0]) for riga in csv_reader] 
@@ -131,6 +131,8 @@ def control_robot(prediction,left_motor,right_motor,left_speed,right_speed):
         
 
 def run_robot(robot):
+
+    adwin = drift.ADWIN()
         
     accuracy_log = []
     labels = []
@@ -142,12 +144,12 @@ def run_robot(robot):
     if PRODUCTION == 'True':
         # load the model trained on classic environment
         pretrained_model,metric = load_model()
-        #adwin = drift.ADWIN()
 
     create_directories()
 
-    l = load_true_labels()
+    #l = load_true_labels()
     i = 0
+    update_frequency = 5
 
     
     while robot.step(TIME_STEP) != -1:
@@ -165,6 +167,7 @@ def run_robot(robot):
         # get sensors(new) data with drift inserted at some time
         X,irs_values,image = get_sensors_data(sensors=sensors,camera=camera)
 
+
         if SAVE_IMAGES == 'True':
             camera.saveImage(str(Path(MODEL_PATH).parent.parent.joinpath('images').joinpath(f"image{i}.jpg")),100)
         
@@ -175,19 +178,19 @@ def run_robot(robot):
         if PRODUCTION == 'True':
             # use the model to predict how the model should move
             y_pred = pretrained_model.predict_one(X)
-            
+
             y = l[i]
+            #y = load_label(irs_values)
             labels.append(y)
             
+            metric.update(y, y_pred)
+
             if VERBOSE == 'True':
                 print(f'Predicted label: {couple[int(y_pred)]}')
                 print(f'True label: {couple[int(y)]}')
 
-            #adwin.update(int(y_pred == y))
-
-            #if adwin.drift_detected:
-            #    print("Change detected, updating model...")
-            #pretrained_model.learn_one(X, y)
+            if i % update_frequency == 0:
+                pretrained_model.learn_one(X, y)
             
             if VERBOSE == 'True':
                 print(f'Accuracy: {metric.get()}')
@@ -198,6 +201,7 @@ def run_robot(robot):
             y_pred = load_label(irs_values)
             labels.append(y_pred)
 
+               
         
         control_robot(y_pred,left_motor,right_motor,left_speed,right_speed)
         i += 1 

@@ -53,7 +53,7 @@ def main(dataset_path, output_dir,model_name, evaluate):
        
     logging.info(f'Accuracy: {metric}')
     file_name = f'{datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}'
-    out = output_dir.joinpath(f'{model_name}_{file_name}.pkl')
+    out = output_dir.joinpath(f'{str(metric)[10:]}_{model_name}_{file_name}.pkl')
     with open(out, 'wb') as f:
         pickle.dump(model, f)
 

@@ -82,7 +82,7 @@ DEF my_epuck E-puck {
   name "complete"
   controller "controller_with_camera"
   controllerArgs [
-    "True C:\\Users\\franc\\Desktop\\TESI\\SML_thesis_line_follower_robot\\webots\\data\\models\\97.22_arf_2024-08-17_11-48-32.pkl False False False False False"
+    "False C:\\Users\\franc\\Desktop\\TESI\\SML_thesis_line_follower_robot\\webots\\data\\models\\97.22_arf_2024-08-17_11-48-32.pkl False True False True False"
   ]
   window "<none>"
   camera_fieldOfView 2

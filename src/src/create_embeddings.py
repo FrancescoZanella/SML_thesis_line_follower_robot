@@ -54,6 +54,7 @@ def main(dataset_path, output_dir, image_folder,model_path,dimensionality_reduct
         
         indices.append(index)
         embeddings_list.append(embedding)
+    
         
 
     

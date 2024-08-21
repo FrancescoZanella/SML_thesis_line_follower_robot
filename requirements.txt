@@ -9,4 +9,6 @@ seaborn
 scikit-learn
 river
 tensorflow
-Pathlib
+pathlib
+umap
+tqdm

@@ -8,6 +8,7 @@ from river import tree, metrics, forest, neighbors,ensemble, naive_bayes, stream
 from river.evaluate import progressive_val_score
 from river.stream import iter_sklearn_dataset
 import pickle
+import re
 
 
 
@@ -50,10 +51,11 @@ def main(dataset_path, output_dir,model_name, evaluate):
                       metric=metric, 
                       print_every=1000)
 
-       
+      
     logging.info(f'Accuracy: {metric}')
     file_name = f'{datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}'
-    out = output_dir.joinpath(f'{str(metric)[10:]}_{model_name}_{file_name}.pkl')
+    acc = re.findall(r"\d+.\d+", str(metric))[0] 
+    out = output_dir.joinpath(f'{acc}_{model_name}_{file_name}.pkl')
     with open(out, 'wb') as f:
         pickle.dump(model, f)
 

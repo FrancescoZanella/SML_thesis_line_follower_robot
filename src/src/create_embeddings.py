@@ -11,14 +11,15 @@ import logging
 import argparse
 import datetime
 from pathlib import Path
-
+import umap
+from tqdm import tqdm
 
 
 
 LOGGING_FORMATTER = "%(asctime)s:%(name)s:%(levelname)s: %(message)s"
 
 
-def main(dataset_path, output_dir, image_folder,model_path):
+def main(dataset_path, output_dir, image_folder,model_path,umap,n_components):
     
     
     logging.info("Starting to load the dataset")
@@ -35,8 +36,8 @@ def main(dataset_path, output_dir, image_folder,model_path):
 
     embeddings_list = []
     indices = []
-    i = 0
-    for img_name in os.listdir(image_folder):
+    logging.info(f"Building embeddings")
+    for img_name in tqdm(os.listdir(image_folder)):
         img_path = os.path.join(image_folder, img_name)
         image = Image.open(img_path)
   
@@ -52,17 +53,28 @@ def main(dataset_path, output_dir, image_folder,model_path):
         
         indices.append(index)
         embeddings_list.append(embedding)
-        print(f'{i}/{len(df)}')
-        i+=1
+        
 
     
-    df_emb = pd.DataFrame(embeddings_list, columns=[f'embedding_{i+1}' for i in range(216)])
-    df_emb.insert(0, 'index', indices)
-    df_emb = df_emb.sort_values(by='index')
+    
+    # add the full embeddings
+    if umap == 'False':
+        df_emb = pd.DataFrame(embeddings_list, columns=[f'embedding_{i+1}' for i in range(216)])
+        df_emb.insert(0, 'index', indices)
+        df_emb = df_emb.sort_values(by='index')
+        df_tot = pd.merge(df, df_emb, on='index', how='inner').drop('index',axis=1)
 
-    df_tot = pd.merge(df, df_emb, on='index', how='inner').drop('index',axis=1)
+        df_tot.to_csv(output_dir,index=False)
+    elif umap == 'True':
+        reducer = umap.UMAP(n_components=n_components)
+        embedding_2d = reducer.fit_transform(embeddings_list)
 
-    df_tot.to_csv(output_dir,index=False)
+        for i in range(n_components):
+            df[f'umap_{i}'] = embedding_2d[:, i]
+
+        df = df.drop('index',axis=1)
+        df.to_csv(output_dir,index=False)
+
     
     logging.info(f'Saved model at: {output_dir}')
     
@@ -77,11 +89,18 @@ if __name__ == '__main__':
                         help="Directory where the images to use to generate embeddings are")
     parser.add_argument("-model_path", default=None, type=str, required=True,
                         help="model to use to create embeddings")
+    parser.add_argument("-dimensionality_reduction", default=None, type=str, required=True,
+                        help="True if i want to have less dimensions")
+    parser.add_argument("-n_components", default='45', type=str, required=True,
+                        help="Number of components in umap reduction if dimensionality reduction is True")
+    
     args = parser.parse_args()
     OUTPUT_DIR = Path(args.output_dir)
     DATASET_DIR = args.dataset_path
     IMAGES_PATH = args.images_path
     MODEL_PATH = args.model_path
+    UMAP = args.dimensionality_reduction
+    N_COMPONENTS = int(args.n_components)
 
     
     
@@ -92,4 +111,4 @@ if __name__ == '__main__':
     
     
     
-    main(DATASET_DIR, OUTPUT_DIR,IMAGES_PATH,MODEL_PATH)
+    main(DATASET_DIR, OUTPUT_DIR,IMAGES_PATH,MODEL_PATH,UMAP,N_COMPONENTS)

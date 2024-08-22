@@ -109,7 +109,4 @@ The robot can operate in two different modes:
 1. Ensure the model is trained and saved at the specified `MODEL_PATH`.
 2. Run the robot in Webots with `PRODUCTION=True`.
 
-## Additional Notes
 
-- Make sure to carefully configure the `controllerArgs` in Webots according to the mode you want to operate in.
-- The saved sensor data, images, and accuracy plots can be used to improve the model iteratively.

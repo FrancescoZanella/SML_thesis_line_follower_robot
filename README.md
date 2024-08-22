@@ -1,7 +1,11 @@
 
 # SML Thesis Line Follower Robot
 
-This repository contains the code and resources for a line-following robot using streaming machine learning techniques. The robot can operate in two modes: training mode, where it collects data, and production mode, where it uses a pre-trained model to navigate.
+This repository contains the code and resources for a line-following robot using streaming machine learning techniques. 
+
+The robot can operate in two modes: 
+    1) training mode, where it collects data used to train models
+    2) production mode: the robot uses a pre-trained model built with River to navigate, continuously updating the model as the robot moves.
 
 ## Getting Started
 

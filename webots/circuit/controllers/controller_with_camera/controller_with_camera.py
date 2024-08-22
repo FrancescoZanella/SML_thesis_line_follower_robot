@@ -10,6 +10,7 @@ from pathlib import Path
 import sys
 import csv
 from PIL import Image
+import re
 
 
 
@@ -228,14 +229,17 @@ def run_robot(robot):
     
     
 if __name__ == "__main__":
-    arg = sys.argv[1].split()
-    
-    PRODUCTION = arg[0]
-    MODEL_PATH = arg[1]
-    PLOT = arg[2]
-    SAVE_SENSORS = arg[3]
-    SAVE_IMAGES = arg[4]
-    VERBOSE = arg[5]
+
+    MODEL_PATH = 'C:\\Users\\franc\\Desktop\\TESI\\SML_thesis_line_follower_robot\\webots\\data\\models\\'
+
+    PRODUCTION = re.search(r"(?<=:\s).*$", sys.argv[1]).group(0)
+    MODEL_PATH += re.search(r"(?<=:\s).*$", sys.argv[2]).group(0)
+    PLOT = re.search(r"(?<=:\s).*$", sys.argv[3]).group(0)
+    SAVE_SENSORS = re.search(r"(?<=:\s).*$", sys.argv[4]).group(0)
+    SAVE_IMAGES = re.search(r"(?<=:\s).*$", sys.argv[5]).group(0)
+    VERBOSE = re.search(r"(?<=:\s).*$", sys.argv[6]).group(0)
+
+   
 
 
     print(f"PRODUCTION: {PRODUCTION}")

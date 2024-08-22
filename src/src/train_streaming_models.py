@@ -47,6 +47,8 @@ def main(dataset_path, output_dir,model_name,images):
     }
     model = models[model_name]
     metric = metrics.Accuracy()
+    c_metric = metrics.ConfusionMatrix()
+
     streams = stream.iter_pandas(X=df[column_names], y=df['target'])
     logging.info(f'TRAINING MODEL {model_name}')
     progressive_val_score(dataset=streams, 

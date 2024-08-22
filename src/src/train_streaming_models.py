@@ -16,14 +16,17 @@ import re
 LOGGING_FORMATTER = "%(asctime)s:%(name)s:%(levelname)s: %(message)s"
 
 
-def main(dataset_path, output_dir,model_name, evaluate):
+def main(dataset_path, output_dir,model_name,images):
     
     
     logging.info("Starting to load the dataset")
     logging.info(f"Dataset path: {dataset_path}")
 
-    
-    df = pd.read_csv(dataset_path)
+    if images == 'True':
+        df = pd.read_csv(dataset_path)
+    elif images == 'False':
+        df = pd.read_csv(dataset_path,names=['sensor0','sensor1','sensor2','sensor3','sensor4','sensor5','sensor6','target'])
+
     column_names = df.drop('target',axis=1).columns
 
     logging.info(f"Number of columns: {len(df.columns)}")
@@ -70,13 +73,16 @@ if __name__ == '__main__':
                         help="Directory where the dataset is placed")
     parser.add_argument("-model_name", default=None, type=str, required=True, choices=['naive_bayes','knn','ht', 'hat', 'bagging', 'leveraging_bagging', 'arf','adwin_bagging','srp' ],
                         help="model type to be trained")
-    parser.add_argument("-evaluate", default=False, type=str,
-                        help="True if you wan to to evaluate the model")
+    parser.add_argument("-with_images", default=None, type=str, required=True,
+                        help="True if the input dataset has also images informations")
+    
     args = parser.parse_args()
     OUTPUT_DIR = Path(args.output_dir)
     DATASET_DIR = Path(args.dataset_path)
     MODEL_NAME = args.model_name
-    EVALUATE = args.evaluate
+    IMAGES = args.with_images
+    
+   
     
     
     
@@ -88,4 +94,4 @@ if __name__ == '__main__':
     
     
     
-    main(DATASET_DIR, OUTPUT_DIR,MODEL_NAME,EVALUATE)
+    main(DATASET_DIR, OUTPUT_DIR,MODEL_NAME,IMAGES)

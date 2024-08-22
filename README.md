@@ -4,8 +4,8 @@
 This repository contains the code and resources for a line-following robot using streaming machine learning techniques. 
 
 The robot can operate in two modes: 
-    1) training mode, where it collects data used to train models
-    2) production mode: the robot uses a pre-trained model built with River to navigate, continuously updating the model as the robot moves.
+- Training mode, where it collects data used to train models
+- Production mode: the robot uses a pre-trained model built with River to navigate, continuously updating the model as the robot moves.
 
 ## Getting Started
 

@@ -9,8 +9,8 @@ WorldInfo {
   basicTimeStep 16
 }
 Viewpoint {
-  orientation -0.4310461293246715 0.6544942369413982 0.6211574101664693 1.6292925924276038
-  position 0.4779681718978398 -2.5647994111595223 4.439631141880992
+  orientation -0.3602843419574715 0.41556471951908436 0.8351653470009975 1.6081762193677283
+  position -0.023531191056601432 -3.5594921879640817 3.7812864616416166
   follow "complete"
 }
 TexturedBackground {
@@ -27,7 +27,7 @@ DEF floor RectangleArena {
   wallHeight 0.05
 }
 Solid {
-  translation 0.182666 1.2032 -2.5313e-14
+  translation 4.20099 0.246173 6.88339e-14
   children [
     Transform {
       scale 0.028 0.028 0.001
@@ -50,7 +50,7 @@ Solid {
   name "square"
 }
 Solid {
-  translation 2.11748 4.2884 8.88181e-16
+  translation 1.00121 1.72392 -8.88176e-16
   children [
     Transform {
       scale 0.028 0.028 0.001
@@ -73,7 +73,7 @@ Solid {
   name "complex"
 }
 Solid {
-  translation -2.24018 -0.764907 -7.59393e-14
+  translation 2.689 1.418 -8.03802e-14
   children [
     Transform {
       scale 0.028 0.028 0.001
@@ -96,17 +96,23 @@ Solid {
   name "test"
 }
 DEF my_epuck E-puck {
-  hidden position_0_0 442.8573549098125
-  hidden position_0_1 432.1348957547883
-  hidden rotation_1 0 1 0 3.0343834072414464
-  hidden rotation_2 0 1 0 4.878294866576437
-  translation -0.517151 -0.221734 -2.3387e-05
-  rotation -0.0025208105182357122 -0.008235569579630703 -0.9999629097661725 0.4380309600543926
+  hidden position_0_0 1804.9644032745894
+  hidden position_0_1 1845.3305124228116
+  hidden linearVelocity_0 -0.030291230174474056 -0.016590822389689543 -0.00014715943713777
+  hidden angularVelocity_0 -1.2922794731163791 2.3834534408533106 0.0019237175037263299
+  hidden rotation_1 0 -1 0 4.592965193131548
+  hidden linearVelocity_1 -0.01847780334225442 -0.009638307341716765 -3.425468888935758e-05
+  hidden angularVelocity_1 0.48160277484676106 -0.941005505058647 0.0035585460077829367
+  hidden rotation_2 0 -0.9999999999999999 0 1.925967887986844
+  hidden linearVelocity_2 -0.018263932529550005 -0.010666581687037428 -0.00012072786167316668
+  hidden angularVelocity_2 0.5337888122492637 -0.9126330439558583 0.008458186500762466
+  translation 0.4801825557722647 0.16180533767467464 -2.5498425968299362e-05
+  rotation 0.016530164918582644 0.004318196276407033 0.9998540427625839 -2.643667795199197
   name "complete"
   controller "controller_with_camera"
   controllerArgs [
-    "production: True"
-    "model_name: 63.14_leveraging_bagging_2024-08-23_11-43-47.pkl"
+    "production: False"
+    "model_name: 90.23_arf_2024-08-23_16-00-25"
     "plot: False"
     "save_data: True"
     "save_images: False"

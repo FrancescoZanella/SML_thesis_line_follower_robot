@@ -27,16 +27,18 @@ def main(dataset_path, output_dir, image_folder,model_path,dimensionality_reduct
     logging.info(f"Dataset path: {dataset_path}")
 
     
-    df = pd.read_csv(dataset_path,names=['sensor0','sensor1','sensor2','sensor3','sensor4','sensor5','sensor6','target'])
+    df = pd.read_csv(dataset_path)
 
-    df.reset_index(inplace=True)
-    
+    df = df.reset_index()
     logging.info(f"Model path: {model_path}")
 
     model = tfk.models.load_model(model_path)
-
+    
     embeddings_list = []
     indices = []
+    if len(os.listdir(image_folder))!=len(df):
+        print("WRONG IMAGES!!")
+        return
     logging.info(f"Building embeddings")
     for img_name in tqdm(os.listdir(image_folder)):
         img_path = os.path.join(image_folder, img_name)
@@ -55,8 +57,7 @@ def main(dataset_path, output_dir, image_folder,model_path,dimensionality_reduct
         indices.append(index)
         embeddings_list.append(embedding)
     
-        
-
+     
     
     
     # add the full embeddings
@@ -70,7 +71,7 @@ def main(dataset_path, output_dir, image_folder,model_path,dimensionality_reduct
     elif dimensionality_reduction == 'True':
         reducer = umap.UMAP(n_components=n_components)
         embedding_2d = reducer.fit_transform(embeddings_list)
-
+        
         for i in range(n_components):
             df[f'umap_{i}'] = embedding_2d[:, i]
 

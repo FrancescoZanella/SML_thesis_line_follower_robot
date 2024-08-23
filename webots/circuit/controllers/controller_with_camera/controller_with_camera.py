@@ -130,7 +130,6 @@ def run_robot(robot):
     accuracy_log = []
     labels = []
     sensors_data = []
-    images = []
 
     sensors,left_motor,right_motor,camera = initialize_devices(robot)
     
@@ -165,7 +164,6 @@ def run_robot(robot):
         if SAVE_IMAGES == 'True':
             camera.saveImage(str(Path(MODEL_PATH).parent.parent.joinpath('images').joinpath(f"image{i}.jpg")),100)
         
-        images.append(image)
         sensors_data.append(irs_values)
         
         

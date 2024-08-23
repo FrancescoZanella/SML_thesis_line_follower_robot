@@ -8,7 +8,7 @@ The robot can operate in two modes:
 - Production mode: the robot uses a pre-trained model built with River to navigate, continuously updating the model as the robot moves.
 
 ## Getting Started
-
+CHANGE WEBOTS PYTHON PATH TO THE PYTHON IN THE VENV
 ### Prerequisites
 
 1. **Webots**: Download and install Webots from [this page](https://cyberbotics.com/).

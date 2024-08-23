@@ -13,7 +13,7 @@ The robot can operate in two modes:
 
 1. **Webots**: Download and install Webots from [this page](https://cyberbotics.com/).
 2. **Git**: Make sure you have Git installed on your system.
-3. **Python**: Python 3.x is required.
+3. **Python**: Python 3.11 is required.
 
 ### Installation
 
@@ -109,7 +109,4 @@ The robot can operate in two different modes:
 1. Ensure the model is trained and saved at the specified `MODEL_PATH`.
 2. Run the robot in Webots with `PRODUCTION=True`.
 
-## Additional Notes
 
-- Make sure to carefully configure the `controllerArgs` in Webots according to the mode you want to operate in.
-- The saved sensor data, images, and accuracy plots can be used to improve the model iteratively.

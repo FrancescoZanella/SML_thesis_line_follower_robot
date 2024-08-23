@@ -9,8 +9,8 @@ WorldInfo {
   basicTimeStep 16
 }
 Viewpoint {
-  orientation -0.3373961963171532 -0.0005381204338868751 0.9413625853713944 3.1446038308769326
-  position 7.193419475751902 -0.36866377700758945 6.498701148662409
+  orientation -0.4310461293246715 0.6544942369413982 0.6211574101664693 1.6292925924276038
+  position 0.4779681718978398 -2.5647994111595223 4.439631141880992
   follow "complete"
 }
 TexturedBackground {
@@ -18,7 +18,7 @@ TexturedBackground {
 TexturedBackgroundLight {
 }
 DEF floor RectangleArena {
-  translation 0 0 1.77636e-15
+  translation 0.0657998 -0.0269045 1.77636e-15
   floorSize 2 2
   floorTileSize 0.25 0.25
   floorAppearance PBRAppearance {
@@ -27,7 +27,7 @@ DEF floor RectangleArena {
   wallHeight 0.05
 }
 Solid {
-  translation 0.0358012 1.3062 -2.26485e-14
+  translation 0.182666 1.2032 -2.5313e-14
   children [
     Transform {
       scale 0.028 0.028 0.001
@@ -47,10 +47,10 @@ Solid {
       ]
     }
   ]
-  name "test"
+  name "square"
 }
 Solid {
-  translation -0.0673546 4.61718 -4.52971e-14
+  translation 2.11748 4.2884 8.88181e-16
   children [
     Transform {
       scale 0.028 0.028 0.001
@@ -72,17 +72,45 @@ Solid {
   ]
   name "complex"
 }
+Solid {
+  translation -2.24018 -0.764907 -7.59393e-14
+  children [
+    Transform {
+      scale 0.028 0.028 0.001
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0 0 0
+            roughness 1
+            metalness 0
+          }
+          geometry Mesh {
+            url [
+              "../../Glorious Rottis-Jaagub/tinker.obj"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+  name "test"
+}
 DEF my_epuck E-puck {
-  hidden position_0_0 309.0569271017257
-  hidden position_0_1 279.412675863808
-  hidden rotation_1 0 -1 0 5.102338257253619
-  hidden rotation_2 0 1 0 2.9525223479061715
-  translation -0.2181750865837763 -0.46529743103314475 -3.237558649216675e-05
-  rotation 5.6450136161473186e-05 5.689393013465543e-06 -0.9999999983905065 -3.0783907718600405
+  hidden position_0_0 442.8573549098125
+  hidden position_0_1 432.1348957547883
+  hidden rotation_1 0 1 0 3.0343834072414464
+  hidden rotation_2 0 1 0 4.878294866576437
+  translation -0.517151 -0.221734 -2.3387e-05
+  rotation -0.0025208105182357122 -0.008235569579630703 -0.9999629097661725 0.4380309600543926
   name "complete"
   controller "controller_with_camera"
   controllerArgs [
-    "False C:\\Users\\franc\\Desktop\\TESI\\SML_thesis_line_follower_robot\\webots\\data\\models\\97.22_arf_2024-08-17_11-48-32.pkl False False False False"
+    "production: True"
+    "model_name: 63.14_leveraging_bagging_2024-08-23_11-43-47.pkl"
+    "plot: False"
+    "save_data: True"
+    "save_images: False"
+    "verbose: True"
   ]
   window "<none>"
   camera_fieldOfView 2

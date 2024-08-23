@@ -45,7 +45,7 @@ def main(dataset_path, output_dir,model_name):
         'adwin_bagging': ensemble.ADWINBaggingClassifier(model=tree.HoeffdingTreeClassifier())
     }
     model = models[model_name]
-    metric = metrics.Accuracy()
+    metric = metrics.F1()
 
 
     streams = stream.iter_pandas(X=df[column_names],y=df['target'])

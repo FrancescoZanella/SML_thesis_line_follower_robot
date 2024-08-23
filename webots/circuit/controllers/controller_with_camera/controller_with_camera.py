@@ -17,7 +17,7 @@ import pandas as pd
 
 
 
-TIME_STEP = 96
+TIME_STEP = 16
 MAX_SPEED = 6.28
 
 def initialize_devices(robot):

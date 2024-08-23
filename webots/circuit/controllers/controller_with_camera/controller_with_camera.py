@@ -11,6 +11,7 @@ import sys
 import csv
 from PIL import Image
 import re
+import pandas as pd
 
 
 
@@ -48,12 +49,6 @@ def load_model():
         pretrained_model = pickle.load(f)
     
     return pretrained_model,metrics.Accuracy()
-
-def save_data(path, data, type):
-    #save data to have true label
-    file_name = f'{type} {datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.csv'
-    print(f'Saving data to {path}')
-    np.savetxt(str(Path(path).joinpath(file_name)), np.array(data), delimiter=',')
 
 def load_true_labels():
     with open('C:\\Users\\franc\\Desktop\\TESI\\SML_thesis_line_follower_robot\\webots\\data\\data\\labels\\true_labels 2024-08-20_16-27-05.csv', mode='r') as file:
@@ -150,6 +145,8 @@ def run_robot(robot):
     update_frequency = 5
 
     
+
+    
     while robot.step(TIME_STEP) != -1:
            
 
@@ -170,10 +167,10 @@ def run_robot(robot):
         
         images.append(image)
         sensors_data.append(irs_values)
-                
+        
         
         if PRODUCTION == 'True':
-            # use the model to predict how the model should move
+            
             y_pred = pretrained_model.predict_one(X)
             #y = l[i]
             y = load_label(irs_values)
@@ -205,10 +202,14 @@ def run_robot(robot):
         
     
     if SAVE_SENSORS == 'True' and PRODUCTION == 'False':
-        # save data to train ml model
+        
         for i in range(len(sensors_data)):
             sensors_data[i].append(labels[i])
-        save_data(Path(MODEL_PATH).parent.parent.joinpath('data').joinpath('sensors_data'),sensors_data,"sensor_data")
+
+        sensors_data = pd.DataFrame(sensors_data,columns=['sensor0','sensor1','sensor2','sensor3','sensor4','sensor5','sensor6','target'])
+        path = Path(MODEL_PATH).parent.parent.joinpath('data').joinpath('sensors_data')
+        file_name = f'sensor_data_{datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.csv'
+        sensors_data.to_csv(str(path.joinpath(file_name)),index=False)
     
     
     if PLOT == 'True' and PRODUCTION == 'True':

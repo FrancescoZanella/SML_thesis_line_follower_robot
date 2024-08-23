@@ -16,18 +16,17 @@ import re
 LOGGING_FORMATTER = "%(asctime)s:%(name)s:%(levelname)s: %(message)s"
 
 
-def main(dataset_path, output_dir,model_name,images):
+def main(dataset_path, output_dir,model_name):
     
     
     logging.info("Starting to load the dataset")
     logging.info(f"Dataset path: {dataset_path}")
 
-    if images == 'True':
-        df = pd.read_csv(dataset_path)
-    elif images == 'False':
-        df = pd.read_csv(dataset_path,names=['sensor0','sensor1','sensor2','sensor3','sensor4','sensor5','sensor6','target'])
-
+    df = pd.read_csv(dataset_path)
+    
+    
     column_names = df.drop('target',axis=1).columns
+
 
     logging.info(f"Number of columns: {len(df.columns)}")
     models = {
@@ -47,9 +46,9 @@ def main(dataset_path, output_dir,model_name,images):
     }
     model = models[model_name]
     metric = metrics.Accuracy()
-    c_metric = metrics.ConfusionMatrix()
 
-    streams = stream.iter_pandas(X=df[column_names], y=df['target'])
+
+    streams = stream.iter_pandas(X=df[column_names],y=df['target'])
     logging.info(f'TRAINING MODEL {model_name}')
     progressive_val_score(dataset=streams, 
                       model=model, 
@@ -57,7 +56,8 @@ def main(dataset_path, output_dir,model_name,images):
                       print_every=1000)
 
       
-    logging.info(f'Accuracy: {metric}')
+    logging.info(f'{metric}')
+    logging.info(metric.cm)
     file_name = f'{datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}'
     acc = re.findall(r"\d+.\d+", str(metric))[0] 
     out = output_dir.joinpath(f'{acc}_{model_name}_{file_name}.pkl')
@@ -75,14 +75,13 @@ if __name__ == '__main__':
                         help="Directory where the dataset is placed")
     parser.add_argument("-model_name", default=None, type=str, required=True, choices=['naive_bayes','knn','ht', 'hat', 'bagging', 'leveraging_bagging', 'arf','adwin_bagging','srp' ],
                         help="model type to be trained")
-    parser.add_argument("-with_images", default=None, type=str, required=True,
-                        help="True if the input dataset has also images informations")
+
     
     args = parser.parse_args()
     OUTPUT_DIR = Path(args.output_dir)
     DATASET_DIR = Path(args.dataset_path)
     MODEL_NAME = args.model_name
-    IMAGES = args.with_images
+    
     
    
     
@@ -96,4 +95,4 @@ if __name__ == '__main__':
     
     
     
-    main(DATASET_DIR, OUTPUT_DIR,MODEL_NAME,IMAGES)
+    main(DATASET_DIR, OUTPUT_DIR,MODEL_NAME)

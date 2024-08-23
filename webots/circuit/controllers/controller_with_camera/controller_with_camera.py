@@ -16,7 +16,7 @@ import re
 
 
 
-TIME_STEP = 16
+TIME_STEP = 96
 MAX_SPEED = 6.28
 
 def initialize_devices(robot):
@@ -97,7 +97,7 @@ def get_sensors_data(sensors,camera):
         sensor_data_t.append(sensors[i].getValue())
 
     
-    s_dict = {f'ir_{j}': val for j,val in enumerate(sensor_data_t)}
+    s_dict = {f'sensor{j}': val for j,val in enumerate(sensor_data_t)}
     
     image = camera.getImage()
     
@@ -131,7 +131,6 @@ def control_robot(prediction,left_motor,right_motor,left_speed,right_speed):
 
 def run_robot(robot):
 
-    adwin = drift.ADWIN()
         
     accuracy_log = []
     labels = []
@@ -166,7 +165,6 @@ def run_robot(robot):
         # get sensors(new) data with drift inserted at some time
         X,irs_values,image = get_sensors_data(sensors=sensors,camera=camera)
 
-
         if SAVE_IMAGES == 'True':
             camera.saveImage(str(Path(MODEL_PATH).parent.parent.joinpath('images').joinpath(f"image{i}.jpg")),100)
         
@@ -177,7 +175,6 @@ def run_robot(robot):
         if PRODUCTION == 'True':
             # use the model to predict how the model should move
             y_pred = pretrained_model.predict_one(X)
-
             #y = l[i]
             y = load_label(irs_values)
             labels.append(y)
@@ -189,7 +186,8 @@ def run_robot(robot):
                 print(f'True label: {couple[int(y)]}')
 
             #if i % update_frequency == 0:
-            #    pretrained_model.learn_one(X, y)
+                #TODO LEARN ALSO THE EMBEDDINGS IMAGES
+                #pretrained_model.learn_one(X, y)
             
             if VERBOSE == 'True':
                 print(f'Accuracy: {metric.get()}')
@@ -233,7 +231,7 @@ if __name__ == "__main__":
     MODEL_PATH = 'C:\\Users\\franc\\Desktop\\TESI\\SML_thesis_line_follower_robot\\webots\\data\\models\\'
 
     PRODUCTION = re.search(r"(?<=:\s).*$", sys.argv[1]).group(0)
-    MODEL_PATH += re.search(r"(?<=:\s).*$", sys.argv[2]).group(0)
+    MODEL_PATH += re.search(r"(?<=:\s).*$", sys.argv[2]).group(0) + '.pkl'
     PLOT = re.search(r"(?<=:\s).*$", sys.argv[3]).group(0)
     SAVE_SENSORS = re.search(r"(?<=:\s).*$", sys.argv[4]).group(0)
     SAVE_IMAGES = re.search(r"(?<=:\s).*$", sys.argv[5]).group(0)

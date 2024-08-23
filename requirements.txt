@@ -12,3 +12,4 @@ tensorflow
 pathlib
 umap-learn
 tqdm
+imblearn

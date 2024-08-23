@@ -3,11 +3,6 @@ import random
 
 
 
-# function to generate a random color
-def generate_random_color():
-    value = random.randint(0, 1)
-    return [value, value, value]
-
 TIME_STEP = 16
 
 robot = Supervisor()  # create Supervisor instance
@@ -30,7 +25,6 @@ while robot.step(TIME_STEP) != -1:
   if j % 1000 == 0:
     #print(f'enter_{j}')
     base_color_field.setSFColor([rgb/255,rgb/255,rgb/255])
-    #print(rgb/255,rgb/255,rgb/255)
     if rgb < 160:
       down = False
     if rgb > 254:

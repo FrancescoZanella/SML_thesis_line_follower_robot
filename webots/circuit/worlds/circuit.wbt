@@ -9,8 +9,8 @@ WorldInfo {
   basicTimeStep 16
 }
 Viewpoint {
-  orientation -0.3602843419574715 0.41556471951908436 0.8351653470009975 1.6081762193677283
-  position -0.023531191056601432 -3.5594921879640817 3.7812864616416166
+  orientation -0.3546025279544039 0.37363676504670024 0.8571187869681678 1.672520625126654
+  position -0.062319201559504996 -5.519829720524803 5.004136398732614
   follow "complete"
 }
 TexturedBackground {
@@ -22,12 +22,13 @@ DEF floor RectangleArena {
   floorSize 2 2
   floorTileSize 0.25 0.25
   floorAppearance PBRAppearance {
+    baseColor 0.5294117647058824 0.5294117647058824 0.5294117647058824
     metalness 0
   }
   wallHeight 0.05
 }
 Solid {
-  translation 4.20099 0.246173 6.88339e-14
+  translation 0.260205 1.35268 9.81435e-14
   children [
     Transform {
       scale 0.028 0.028 0.001
@@ -50,7 +51,7 @@ Solid {
   name "square"
 }
 Solid {
-  translation 1.00121 1.72392 -8.88176e-16
+  translation -1.04661 1.87202 -2.22044e-15
   children [
     Transform {
       scale 0.028 0.028 0.001
@@ -73,7 +74,7 @@ Solid {
   name "complex"
 }
 Solid {
-  translation 2.689 1.418 -8.03802e-14
+  translation -0.476723 3.90643 -8.57092e-14
   children [
     Transform {
       scale 0.028 0.028 0.001
@@ -96,27 +97,27 @@ Solid {
   name "test"
 }
 DEF my_epuck E-puck {
-  hidden position_0_0 1804.9644032745894
-  hidden position_0_1 1845.3305124228116
-  hidden linearVelocity_0 -0.030291230174474056 -0.016590822389689543 -0.00014715943713777
-  hidden angularVelocity_0 -1.2922794731163791 2.3834534408533106 0.0019237175037263299
-  hidden rotation_1 0 -1 0 4.592965193131548
-  hidden linearVelocity_1 -0.01847780334225442 -0.009638307341716765 -3.425468888935758e-05
-  hidden angularVelocity_1 0.48160277484676106 -0.941005505058647 0.0035585460077829367
-  hidden rotation_2 0 -0.9999999999999999 0 1.925967887986844
-  hidden linearVelocity_2 -0.018263932529550005 -0.010666581687037428 -0.00012072786167316668
-  hidden angularVelocity_2 0.5337888122492637 -0.9126330439558583 0.008458186500762466
-  translation 0.4801825557722647 0.16180533767467464 -2.5498425968299362e-05
-  rotation 0.016530164918582644 0.004318196276407033 0.9998540427625839 -2.643667795199197
+  hidden position_0_0 751.0791101914913
+  hidden position_0_1 774.3369418303452
+  hidden linearVelocity_0 0.06465375636506093 -0.038479068610489414 1.0928433326278021e-07
+  hidden angularVelocity_0 -0.004161787315818574 -0.006992759702248557 8.138599831176501e-09
+  hidden rotation_1 0 -1 0 2.9031266700590956
+  hidden linearVelocity_1 0.06461879325433979 -0.03845826008232769 -3.5222247668825266e-11
+  hidden angularVelocity_1 1.9229130432404127 3.2309396974570355 5.606084351626055e-08
+  hidden rotation_2 0 -1 0 4.778036259923569
+  hidden linearVelocity_2 0.06461879346771532 -0.03845826021141001 1.701545793100845e-10
+  hidden angularVelocity_2 1.9229130160769101 3.2309397136351077 -4.926145570787999e-08
+  translation -0.040056268607149434 -0.6569362816563374 -3.191539559370231e-05
+  rotation -0.001286836036138452 -0.004678317889905699 -0.9999882286280859 0.5368561162182865
   name "complete"
   controller "controller_with_camera"
   controllerArgs [
-    "production: False"
-    "model_name: 90.23_arf_2024-08-23_16-00-25"
+    "production: True"
+    "model_name: 93.63_raw_leveraging_bagging_2024-08-24_13-13-28"
     "plot: False"
-    "save_data: True"
+    "save_data: False"
     "save_images: False"
-    "verbose: True"
+    "verbose: False"
   ]
   window "<none>"
   camera_fieldOfView 2
@@ -172,6 +173,6 @@ DEF my_epuck E-puck {
 }
 Robot {
   name "supervisor"
-  controller "<none>"
+  controller "supervisor"
   supervisor TRUE
 }

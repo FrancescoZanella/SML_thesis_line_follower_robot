@@ -29,6 +29,15 @@ def main(dataset_path, output_dir,model_name):
 
 
     logging.info(f"Number of columns: {len(df.columns)}")
+
+    if len(df.columns) == 28:
+        name = 'umap_20'
+    if len(df.columns) == 18:
+        name = 'umap_10'
+    if len(df.columns) == 224:
+        name = 'full_emb'
+    if len(df.columns)==8:
+        name = 'raw'
     models = {
         'naive_bayes': naive_bayes.GaussianNB(),
         'knn': neighbors.KNNClassifier(n_neighbors=10),
@@ -60,7 +69,7 @@ def main(dataset_path, output_dir,model_name):
     logging.info(metric.cm)
     file_name = f'{datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}'
     acc = re.findall(r"\d+.\d+", str(metric))[0] 
-    out = output_dir.joinpath(f'{acc}_{model_name}_{file_name}.pkl')
+    out = output_dir.joinpath(f'{acc}_{name}_{model_name}_{file_name}.pkl')
     with open(out, 'wb') as f:
         pickle.dump(model, f)
 

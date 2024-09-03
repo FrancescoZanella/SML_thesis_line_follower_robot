@@ -88,7 +88,6 @@ def run_robot(robot):
     
     with open('drift_status.txt', 'w') as f:
         f.write('0')
-    print("Drift status inizializzato a 0 (spento)")
 
     while robot.step(TIME_STEP) != -1:
         X, irs_values = get_sensors_data(sensors=sensors)

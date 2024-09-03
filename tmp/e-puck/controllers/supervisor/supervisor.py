@@ -1,7 +1,7 @@
 from controller import Supervisor
 
 TIME_STEP = 32
-DRIFT_FILE = r'C:\Users\franc\Desktop\TESI\SML_thesis_line_follower_robot\tmp\e-puck\controllers\prova\drift_status.txt'
+DRIFT_FILE = r'C:\Users\franc\Desktop\TESI\SML_thesis_line_follower_robot\tmp\e-puck\controllers\controller_with_camera\drift_status.txt'
 
 def main():
     robot = Supervisor()

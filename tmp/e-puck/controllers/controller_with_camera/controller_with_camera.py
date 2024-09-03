@@ -10,6 +10,7 @@ import re
 from collections import deque
 import statistics
 import math
+import os
 
 TIME_STEP = 32
 MAX_SPEED = 6.28
@@ -84,7 +85,10 @@ def run_robot(robot):
     drift_introduced = False
     drift_factor = 2
     start_drift_step = 1000
-   
+    
+    with open('drift_status.txt', 'w') as f:
+        f.write('0')
+    print("Drift status inizializzato a 0 (spento)")
 
     while robot.step(TIME_STEP) != -1:
         X, irs_values = get_sensors_data(sensors=sensors)
@@ -95,6 +99,8 @@ def run_robot(robot):
             if not drift_introduced:
                 print(f"Drift significativo introdotto al passo {i}")
                 drift_introduced = True
+                with open('drift_status.txt', 'w') as f:
+                    f.write('1')        
         else:
             original_irs_values = irs_values
 
@@ -131,6 +137,7 @@ def run_robot(robot):
         i += 1
 
         
+    os.remove(r"C:\Users\franc\Desktop\TESI\SML_thesis_line_follower_robot\tmp\e-puck\controllers\controller_with_camera\drift_status.txt")
 
     if PLOT == 'True':
         plt.figure(figsize=(12, 6))

@@ -11,6 +11,7 @@ from collections import deque
 import statistics
 import math
 import os
+import numpy as np
 
 TIME_STEP = 32
 MAX_SPEED = 6.28
@@ -68,11 +69,21 @@ def get_sensors_data(sensors):
     
     return s_dict,sensor_data_t
 
+def check_lost_track(irs_values):
+    irs_values = np.array(irs_values)
+    if irs_values.std() / irs_values.mean() * 100 < 10:
+        return True
+    else:
+        return False
+
 def run_robot(robot):
     rmse_log = []
     labels = []
     sensors_data = []
     drift_points = []
+    lost_track = deque(maxlen=10)
+    last_velocities = deque(maxlen=10)
+    drift_intervals = [(1000, 6000)]
     
     sensors, left_motor, right_motor = initialize_devices(robot)
 
@@ -84,7 +95,7 @@ def run_robot(robot):
     i = 0
     drift_introduced = False
     drift_factor = 2
-    start_drift_step = 1000
+    recover_track = False
     
     with open('drift_status.txt', 'w') as f:
         f.write('0')
@@ -92,17 +103,25 @@ def run_robot(robot):
     while robot.step(TIME_STEP) != -1:
         X, irs_values = get_sensors_data(sensors=sensors)
         
-        if PRODUCTION == 'True' and i >= start_drift_step:
-            original_irs_values = irs_values.copy()
-            irs_values = [val * drift_factor for val in irs_values]
-            if not drift_introduced:
-                print(f"Drift significativo introdotto al passo {i}")
-                drift_introduced = True
+        if PRODUCTION == 'True':
+            if any(start <= i < end for start, end in drift_intervals):
+                original_irs_values = irs_values.copy()
+                irs_values = [val * drift_factor for val in irs_values]
+                if not drift_introduced:
+                    print(f"Drift significativo introdotto al passo {i}")
+                    drift_introduced = True
+                    with open('drift_status.txt', 'w') as f:
+                        f.write('1')        
+            else:
+                original_irs_values = irs_values
                 with open('drift_status.txt', 'w') as f:
-                    f.write('1')        
+                        f.write('0')
+                drift_introduced = False
+
         else:
             original_irs_values = irs_values
-
+            
+        
         sensors_data.append(irs_values)
 
                
@@ -114,7 +133,7 @@ def run_robot(robot):
             labels.append(vel_true)
             metric.update(vel_true, vel_pred)
             
-            if LEARNING == 'True' and i > start_drift_step:
+            if LEARNING == 'True' and any(start <= i < end for start, end in drift_intervals):
                 print(f'Updating model')
                 pretrained_model.learn_one(X_for_prediction, vel_true)
             
@@ -123,13 +142,33 @@ def run_robot(robot):
                 
 
             vel = vel_pred
+
         else:
             vel = load_left_velocity(irs_values)
             labels.append(vel)
 
-        rmse_log.append(metric.get())
-        left_speed = max(min(0.00628 * vel, MAX_SPEED), -MAX_SPEED)
-        right_speed = max(min(0.00628 * (400 - vel), MAX_SPEED), -MAX_SPEED)
+        
+        lost_track.append(check_lost_track(irs_values))
+        
+        if all(lost_track):
+            recover_track = True
+        elif recover_track and not any(lost_track):
+               recover_track = False
+            
+        if PRODUCTION == 'True':
+            rmse_log.append(metric.get())
+        
+       
+
+        if recover_track and ENABLE_RECOVERY == 'True':
+            print(f'Recovering track {i}')
+            left_speed = max(min(0.00628 * (400 - np.mean(last_velocities)), MAX_SPEED), -MAX_SPEED)
+            right_speed = max(min(0.00628 * np.mean(last_velocities), MAX_SPEED), -MAX_SPEED)
+        else:
+            left_speed = max(min(0.00628 * vel, MAX_SPEED), -MAX_SPEED)
+            right_speed = max(min(0.00628 * (400 - vel), MAX_SPEED), -MAX_SPEED)
+
+        last_velocities.append(left_speed)
 
         left_motor.setVelocity(left_speed)
         right_motor.setVelocity(right_speed)
@@ -178,7 +217,7 @@ def run_robot(robot):
     
 
 def main():
-    global MODEL_PATH, PRODUCTION, PLOT, SAVE_SENSORS, LEARNING, VERBOSE
+    global MODEL_PATH, PRODUCTION, PLOT, SAVE_SENSORS, LEARNING, VERBOSE, ENABLE_RECOVERY
 
     MODEL_PATH = 'C:\\Users\\franc\\Desktop\\TESI\\SML_thesis_line_follower_robot\\tmp\\e-puck\\data\\models\\'
 
@@ -188,6 +227,7 @@ def main():
     SAVE_SENSORS = re.search(r"(?<=:\s).*$", sys.argv[4]).group(0)
     VERBOSE = re.search(r"(?<=:\s).*$", sys.argv[5]).group(0)
     LEARNING = re.search(r"(?<=:\s).*$", sys.argv[6]).group(0)
+    ENABLE_RECOVERY = re.search(r"(?<=:\s).*$", sys.argv[7]).group(0)
 
     print(f"PRODUCTION: {PRODUCTION}")
     print(f"MODEL_PATH: {MODEL_PATH}")
@@ -195,6 +235,7 @@ def main():
     print(f"SAVE_SENSORS: {SAVE_SENSORS}")
     print(f"VERBOSE: {VERBOSE}")
     print(f"LEARNING: {LEARNING}")
+    print(f"ENABLE_RECOVERY: {ENABLE_RECOVERY}")
 
     my_robot = Robot()
     run_robot(my_robot)

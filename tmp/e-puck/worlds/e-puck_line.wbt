@@ -37,20 +37,18 @@ DEF floor RectangleArena {
   wallHeight 0.05
 }
 DEF my_epuck E-puck {
-  hidden translation_1 0 0.026 0.02
   hidden rotation_1 0 -1 0 2.9802322387695313e-08
-  hidden translation_2 0 -0.026 0.02
   hidden rotation_2 0 -1 0 2.9802322387695313e-08
   translation -0.13560500010544854 -0.3155959999907371 -6.396199734138089e-05
   rotation -5.749574586877354e-06 -0.0001317978595842472 -0.9999999912981331 0.08761697672170833
-  controller "<none>"
+  controller "controller_with_camera"
   controllerArgs [
     "production: True"
     "model_path: 19.42926_raw_arf_2024-08-30_16-37-21"
-    "plot: True"
+    "plot: False"
     "save_data: False"
-    "verbose: True"
-    "learning: True"
+    "verbose: False"
+    "learning: False"
   ]
   window "<none>"
   camera_fieldOfView 0.94
@@ -62,7 +60,7 @@ DEF my_epuck E-puck {
 }
 Robot {
   name "supervisor"
-  controller "<none>"
+  controller "supervisor"
   supervisor TRUE
 }
 DEF sign Transform {
@@ -74,7 +72,7 @@ DEF sign Transform {
       appearance Appearance {
         texture ImageTexture {
           url [
-            "C:/Users/franc/Desktop/no_drift.png"
+            "C:/Users/franc/Desktop/drift.png"
           ]
           repeatS FALSE
           repeatT FALSE

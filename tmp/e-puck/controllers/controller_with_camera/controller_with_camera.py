@@ -83,7 +83,7 @@ def run_robot(robot):
     drift_points = []
     lost_track = deque(maxlen=10)
     last_velocities = deque(maxlen=10)
-    drift_intervals = [(1000, 6000)]
+    drift_intervals = [(1000, 2000)]
     
     sensors, left_motor, right_motor = initialize_devices(robot)
 
@@ -183,6 +183,11 @@ def run_robot(robot):
         plt.title('RMSE over time with Drift Detection')
         plt.xlabel('Time steps')
         plt.ylabel('RMSE')
+        
+        for start, end in drift_intervals:
+            plt.axvline(x=start, color='r', linestyle='--', label='Drift Interval')
+            plt.axvline(x=end, color='r', linestyle='--')
+            plt.axvspan(start, end, facecolor='gray', alpha=0.2)
         
         for point in drift_points:
             plt.axvline(x=point, color='r', linestyle='--', label='Drift Detected' if point == drift_points[0] else '')

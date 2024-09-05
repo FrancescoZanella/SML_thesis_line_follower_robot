@@ -5,10 +5,8 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 import sys
 import csv
-from PIL import Image
 import re
 from collections import deque
-import statistics
 import math
 import numpy as np
 

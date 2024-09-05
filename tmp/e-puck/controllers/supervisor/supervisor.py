@@ -1,8 +1,9 @@
 from controller import Supervisor
+from pathlib import Path
 
 TIME_STEP = 32
-DRIFT_FILE = r'C:\Users\franc\Desktop\TESI\SML_thesis_line_follower_robot\tmp\e-puck\controllers\controller_with_camera\drift_status.txt'
-
+DRIFT_FILE = Path(__file__).parent.parent / 'controller_with_camera' / 'drift_status.txt'
+STATUS_FILE = Path(__file__).parent.parent.parent / 'resources'
 def main():
     robot = Supervisor()
     transform_node = robot.getFromDef('sign')
@@ -19,11 +20,11 @@ def main():
         with open(DRIFT_FILE, 'r') as f:
             drift_status = f.read().strip()
         if drift_status == '1' and not drift_active:
-            url_field.setMFString(0, 'C:\\Users\\franc\\Desktop\\drift.png')
+            url_field.setMFString(0, str(STATUS_FILE / 'drift.png'))
             drift_active = True
             print('Drift attivo')
         elif drift_status == '0' and drift_active:
-            url_field.setMFString(0, 'C:\\Users\\franc\\Desktop\\no_drift.png')
+            url_field.setMFString(0, str(STATUS_FILE / 'no_drift.png'))
             drift_active = False
             print('Drift spento')
 

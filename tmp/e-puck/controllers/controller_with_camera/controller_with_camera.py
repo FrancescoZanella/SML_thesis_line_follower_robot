@@ -10,7 +10,6 @@ import re
 from collections import deque
 import statistics
 import math
-import os
 import numpy as np
 
 TIME_STEP = 32
@@ -174,8 +173,7 @@ def run_robot(robot):
         right_motor.setVelocity(right_speed)
         i += 1
 
-        
-    os.remove(r"C:\Users\franc\Desktop\TESI\SML_thesis_line_follower_robot\tmp\e-puck\controllers\controller_with_camera\drift_status.txt")
+    Path("drift_status.txt").unlink(missing_ok=True)   
 
     if PLOT == 'True':
         plt.figure(figsize=(12, 6))
@@ -196,7 +194,7 @@ def run_robot(robot):
         window_size = 50
         for i in range(window_size, len(rmse_log)):
             window_median = sorted(rmse_log[i-window_size:i])[window_size // 2]
-            if abs(rmse_log[i] - window_median) > 4:  # Define a threshold for significant jump
+            if abs(rmse_log[i] - window_median) > 4: 
                 plt.axvline(x=i, color='r', linestyle='-', label='Significant RMSE Jump' if i == window_size else '')
 
         plt.legend()
@@ -224,10 +222,9 @@ def run_robot(robot):
 def main():
     global MODEL_PATH, PRODUCTION, PLOT, SAVE_SENSORS, LEARNING, VERBOSE, ENABLE_RECOVERY
 
-    MODEL_PATH = 'C:\\Users\\franc\\Desktop\\TESI\\SML_thesis_line_follower_robot\\tmp\\e-puck\\data\\models\\'
-
+    MODEL_PATH = Path(__file__).parent.parent.parent / 'data' / 'models'
     PRODUCTION = re.search(r"(?<=:\s).*$", sys.argv[1]).group(0)
-    MODEL_PATH += re.search(r"(?<=:\s).*$", sys.argv[2]).group(0) + '.pkl'
+    MODEL_PATH = str(MODEL_PATH.joinpath(re.search(r"(?<=:\s).*$", sys.argv[2]).group(0) + '.pkl'))
     PLOT = re.search(r"(?<=:\s).*$", sys.argv[3]).group(0)
     SAVE_SENSORS = re.search(r"(?<=:\s).*$", sys.argv[4]).group(0)
     VERBOSE = re.search(r"(?<=:\s).*$", sys.argv[5]).group(0)

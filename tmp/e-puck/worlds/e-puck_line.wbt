@@ -14,7 +14,7 @@ WorldInfo {
 }
 Viewpoint {
   orientation 0.2925350753299163 0.2157730011632685 -0.9315928518782851 1.7731387821939846
-  position 0.08497428913369655 1.5800137009659847 0.9359273940559563
+  position 0.12775036062776432 1.9445542308466017 1.1705936114024311
 }
 TexturedBackground {
 }
@@ -26,7 +26,7 @@ DEF floor RectangleArena {
   floorAppearance PBRAppearance {
     baseColorMap ImageTexture {
       url [
-        "../../../../../test.png"
+        "../resources/test.png"
       ]
       repeatS FALSE
       repeatT FALSE
@@ -37,18 +37,27 @@ DEF floor RectangleArena {
   wallHeight 0.05
 }
 DEF my_epuck E-puck {
+  hidden position_0_0 -6.119809592138623e-09
+  hidden position_0_1 -6.1198104976630844e-09
+  hidden linearVelocity_0 3.221511755356462e-07 -2.8297812675222302e-08 -5.563490409106938e-10
+  hidden angularVelocity_0 1.8865893743065767e-06 2.147752300637593e-05 -1.4208229821635604e-13
   hidden rotation_1 0 -1 0 2.9802322387695313e-08
+  hidden linearVelocity_1 4.293232173119754e-07 -4.027156210156119e-08 7.3619084988596485e-06
+  hidden angularVelocity_1 2.0770998088173975e-06 2.146078804487019e-05 -3.391358214889593e-13
   hidden rotation_2 0 -1 0 2.9802322387695313e-08
-  translation -0.13560500010544854 -0.3155959999907371 -6.396199734138089e-05
-  rotation -5.749574586877354e-06 -0.0001317978595842472 -0.9999999912981331 0.08761697672170833
+  hidden linearVelocity_2 4.2976947485290004e-07 -3.519128436452884e-08 7.361925950855053e-06
+  hidden angularVelocity_2 1.696078859377704e-06 2.149425763728354e-05 5.497133959904763e-14
+  translation -0.13560500010582197 -0.3155959999907042 -6.396201526056092e-05
+  rotation -5.404624271347262e-06 -0.00012392854272059986 -0.9999999923062532 0.08761697663349825
   controller "controller_with_camera"
   controllerArgs [
     "production: True"
     "model_path: 19.42926_raw_arf_2024-08-30_16-37-21"
-    "plot: False"
+    "plot: True"
     "save_data: False"
     "verbose: False"
     "learning: False"
+    "enable_recovery: True"
   ]
   window "<none>"
   camera_fieldOfView 0.94
@@ -72,7 +81,7 @@ DEF sign Transform {
       appearance Appearance {
         texture ImageTexture {
           url [
-            "C:/Users/franc/Desktop/drift.png"
+            "C:/Users/franc/Desktop/TESI/SML_thesis_line_follower_robot/tmp/e-puck/resources/no_drift.png"
           ]
           repeatS FALSE
           repeatT FALSE

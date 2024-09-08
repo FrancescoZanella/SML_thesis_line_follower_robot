@@ -13,3 +13,4 @@ pathlib
 umap-learn
 tqdm
 imblearn
+plotly

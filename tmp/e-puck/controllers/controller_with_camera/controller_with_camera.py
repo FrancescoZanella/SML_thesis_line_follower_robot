@@ -1,3 +1,4 @@
+import pandas as pd
 from controller import Robot
 from river import metrics
 import pickle
@@ -81,7 +82,7 @@ def run_robot(robot):
     drift_points = []
     lost_track = deque(maxlen=10)
     last_velocities = deque(maxlen=10)
-    drift_intervals = [(2000,4000),(4000,5000)]
+    drift_intervals = [(2000,8000),(9000,10000)]
     valore_nero = 300
     valore_bianco = 850
     tolleranza = 50
@@ -99,6 +100,7 @@ def run_robot(robot):
     drift_introduced = False
     drift_factor = 2
     recover_track = False
+    last_is_drift = False
     
     with open('drift_status.txt', 'w') as f:
         f.write('0')
@@ -127,20 +129,25 @@ def run_robot(robot):
                
         if PRODUCTION == 'True':
             X_for_prediction = {f'sensor{j}': val for j, val in enumerate(irs_values)}
-            vel_pred = pretrained_model.predict_one(X_for_prediction)
+            if drift_detector.drift_detected and last_is_drift:
+                vel_pred = model.predict_one(X_for_prediction)
+            else:
+                vel_pred = pretrained_model.predict_one(X_for_prediction)
             vel_true = load_left_velocity(original_irs_values)
 
             labels.append(vel_true)
             metric.update(vel_true, vel_pred)
-            
-            if LEARNING == 'True' and any(start <= i < end for start, end in drift_intervals):
-                #print(f'Updating model')
-                pretrained_model.learn_one(X_for_prediction, vel_true)
-            
+            if LEARNING == 'True' and drift_detector.drift_detected and not last_is_drift:
+                model = load_model()[0]
+                last_is_drift = True
+            if LEARNING == 'True' and drift_detector.drift_detected and last_is_drift:
+                model.learn_one(X_for_prediction, vel_true)
+            if LEARNING == 'True' and not drift_detector.drift_detected and last_is_drift:
+                last_is_drift = False
             if VERBOSE == 'True':
                 print(f'RMSE: {metric.get()}')
                 
-
+            
             vel = vel_pred
         else:
             vel = load_left_velocity(irs_values)
@@ -183,21 +190,13 @@ def run_robot(robot):
         plt.xlabel('Time steps')
         plt.ylabel('RMSE')
         
-        for start, end in drift_intervals:
-            plt.axvline(x=start, color='r', linestyle='--', label='Drift Interval')
-            plt.axvline(x=end, color='r', linestyle='--')
-            plt.axvspan(start, end, facecolor='gray', alpha=0.2)
+        # Create a red background for drift intervals
+        for start, end in drift_detector.anomalies:
+            plt.axvspan(start, end, facecolor='red', alpha=0.2)
         
-        for point in drift_points:
-            plt.axvline(x=point, color='r', linestyle='--', label='Drift Detected' if point == drift_points[0] else '')
+        # Plot RMSE on top of the background
+        plt.plot(rmse_log, label='RMSE', zorder=10)
         
-        # Add vertical red lines for significant RMSE jumps
-        window_size = 50
-        for i in range(window_size, len(rmse_log)):
-            window_median = sorted(rmse_log[i-window_size:i])[window_size // 2]
-            if abs(rmse_log[i] - window_median) > 4: 
-                plt.axvline(x=i, color='r', linestyle='-', label='Significant RMSE Jump' if i == window_size else '')
-
         plt.legend()
         if LEARNING == 'True':
             name = 'rmse_drift_plot_learning.png'

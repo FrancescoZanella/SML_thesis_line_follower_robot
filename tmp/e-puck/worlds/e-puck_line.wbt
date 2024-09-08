@@ -47,9 +47,9 @@ DEF my_epuck E-puck {
   controllerArgs [
     "production: True"
     "model_path: 19.42926_raw_arf_2024-08-30_16-37-21"
-    "plot: True"
-    "save_data: True"
-    "verbose: True"
+    "plot: False"
+    "save_data: False"
+    "verbose: False"
     "learning: True"
     "enable_recovery: False"
   ]

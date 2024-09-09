@@ -14,7 +14,7 @@ WorldInfo {
 }
 Viewpoint {
   orientation 0.2925350753299163 0.2157730011632685 -0.9315928518782851 1.7731387821939846
-  position -0.045515910112919264 1.8290507794503066 1.2435145469773796
+  position -0.026169017280492493 1.9939262885454894 1.3496501036056419
 }
 TexturedBackground {
 }
@@ -47,9 +47,9 @@ DEF my_epuck E-puck {
   controllerArgs [
     "production: True"
     "model_path: 19.42926_raw_arf_2024-08-30_16-37-21"
-    "plot: False"
+    "plot: True"
     "save_data: False"
-    "verbose: False"
+    "verbose: True"
     "learning: True"
     "enable_recovery: False"
   ]

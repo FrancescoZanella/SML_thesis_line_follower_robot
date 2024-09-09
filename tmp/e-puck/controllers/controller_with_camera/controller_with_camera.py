@@ -15,7 +15,7 @@ from drift_detector import DriftDetector
 TIME_STEP = 32
 MAX_SPEED = 6.28
 LFM_FORWARD_SPEED = 200
-LFM_K_GS_SPEED = 1e-6
+LFM_K_GS_SPEED = 0.6
 NB_GROUND_SENS = 3
 
 def initialize_devices(robot):
@@ -43,7 +43,7 @@ def load_model():
 
 def load_left_velocity(irs_values):
     DeltaS = irs_values[2] - irs_values[0]
-    speed_l = LFM_FORWARD_SPEED - LFM_K_GS_SPEED * math.pow(DeltaS, 3)
+    speed_l = LFM_FORWARD_SPEED - LFM_K_GS_SPEED * math.pow(DeltaS, 1)
     return speed_l
 
 def create_directories():
@@ -79,10 +79,8 @@ def run_robot(robot):
     rmse_log = []
     labels = []
     sensors_data = []
-    drift_points = []
     lost_track = deque(maxlen=10)
     last_velocities = deque(maxlen=10)
-    drift_intervals = [(2000,8000),(9000,10000)]
     valore_nero = 300
     valore_bianco = 850
     tolleranza = 50
@@ -97,51 +95,34 @@ def run_robot(robot):
     create_directories()
 
     i = 0
-    drift_introduced = False
-    drift_factor = 2
     recover_track = False
     last_is_drift = False
     
-    with open('drift_status.txt', 'w') as f:
-        f.write('0')
 
     drift_detector = DriftDetector(valore_nero, valore_bianco, tolleranza, min_outlier_duration, min_gap_duration)
 
     while robot.step(TIME_STEP) != -1:
         X, irs_values = get_sensors_data(sensors=sensors)
-        
-        if any(start <= i < end for start, end in drift_intervals):
-            original_irs_values = irs_values.copy()
-            irs_values = [val * drift_factor for val in irs_values]
-            if not drift_introduced:
-                print(f"Drift significativo introdotto al passo {i}")
-                drift_introduced = True
-                with open('drift_status.txt', 'w') as f:
-                    f.write('1')        
-        else:
-            original_irs_values = irs_values
-            with open('drift_status.txt', 'w') as f:
-                    f.write('0')
-            drift_introduced = False
-        
+
         sensors_data.append(irs_values)
         drift_detector.update(irs_values[0])
                
         if PRODUCTION == 'True':
-            X_for_prediction = {f'sensor{j}': val for j, val in enumerate(irs_values)}
             if drift_detector.drift_detected and last_is_drift:
-                vel_pred = model.predict_one(X_for_prediction)
+                vel_pred = model.predict_one(X)
             else:
-                vel_pred = pretrained_model.predict_one(X_for_prediction)
-            vel_true = load_left_velocity(original_irs_values)
+                vel_pred = pretrained_model.predict_one(X)
+            vel_true = load_left_velocity(irs_values)
 
             labels.append(vel_true)
             metric.update(vel_true, vel_pred)
             if LEARNING == 'True' and drift_detector.drift_detected and not last_is_drift:
+                print('new model created')
                 model = load_model()[0]
                 last_is_drift = True
             if LEARNING == 'True' and drift_detector.drift_detected and last_is_drift:
-                model.learn_one(X_for_prediction, vel_true)
+                #print('learning')
+                model.learn_one(X, vel_true)
             if LEARNING == 'True' and not drift_detector.drift_detected and last_is_drift:
                 last_is_drift = False
             if VERBOSE == 'True':
@@ -165,7 +146,6 @@ def run_robot(robot):
             rmse_log.append(metric.get())
         
         
-
         if recover_track and ENABLE_RECOVERY == 'True':
             print(f'Recovering track {i}')
             left_speed = max(min(0.00628 * (400 - np.mean(last_velocities)), MAX_SPEED), -MAX_SPEED)
@@ -181,7 +161,6 @@ def run_robot(robot):
         i += 1
         
     drift_detector.plot_anomalies(pd.DataFrame([x[0] for x in sensors_data], columns=['sensor0']))
-    Path("drift_status.txt").unlink(missing_ok=True)   
 
     if PLOT == 'True':
         plt.figure(figsize=(12, 6))

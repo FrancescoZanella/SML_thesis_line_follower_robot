@@ -1,3 +1,4 @@
+from datetime import datetime
 import pandas as pd
 from controller import Robot
 from river import metrics
@@ -15,7 +16,7 @@ from drift_detector import DriftDetector
 TIME_STEP = 32
 MAX_SPEED = 6.28
 LFM_FORWARD_SPEED = 200
-LFM_K_GS_SPEED = 0.6
+LFM_K_GS_SPEED = 0.6#1e-6
 NB_GROUND_SENS = 3
 
 def initialize_devices(robot):
@@ -125,6 +126,7 @@ def run_robot(robot):
                 model.learn_one(X, vel_true)
             if LEARNING == 'True' and not drift_detector.drift_detected and last_is_drift:
                 last_is_drift = False
+                del model
             if VERBOSE == 'True':
                 print(f'RMSE: {metric.get()}')
                 
@@ -160,9 +162,10 @@ def run_robot(robot):
         right_motor.setVelocity(right_speed)
         i += 1
         
-    drift_detector.plot_anomalies(pd.DataFrame([x[0] for x in sensors_data], columns=['sensor0']))
 
     if PLOT == 'True':
+        drift_detector.plot_anomalies(pd.DataFrame([x[0] for x in sensors_data], columns=['sensor0']))
+
         plt.figure(figsize=(12, 6))
         plt.plot(rmse_log, label='RMSE')
         plt.title('RMSE over time with Drift Detection')
@@ -177,10 +180,12 @@ def run_robot(robot):
         plt.plot(rmse_log, label='RMSE', zorder=10)
         
         plt.legend()
+        current_time = datetime.now().strftime("%Y%m%d_%H%M%S")
+
         if LEARNING == 'True':
-            name = 'rmse_drift_plot_learning.png'
+            name = f'rmse_drift_plot_learning_{current_time}.png'
         else:
-            name = 'rmse_drift_plot_no_learning.png'
+            name = f'rmse_drift_plot_no_learning_{current_time}.png'
         plot_path = str(Path(MODEL_PATH).parent.parent.joinpath('plots', name))
         plt.savefig(plot_path)
         plt.close()

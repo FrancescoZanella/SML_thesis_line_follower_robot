@@ -1,6 +1,8 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+from pathlib import Path
+from datetime import datetime
 
 
 class DriftDetector:
@@ -30,7 +32,7 @@ class DriftDetector:
                     self.anomalies.pop()
                 else:
                     self.anomaly_start = self.current_index - self.min_duration + 1
-                    print(f"anomalia iniziata all'indice {self.anomaly_start}")
+                    print(f"drift detected from {self.anomaly_start}")
                     self.drift_detected = True
                 self.last_notification = "start"
         else:
@@ -40,7 +42,7 @@ class DriftDetector:
                 self.anomaly_start = None
                 self.last_notification = "end"
             elif self.last_notification == "end" and self.current_index > self.last_anomaly_end + self.min_gap:
-                print(f"anomalia terminata all'indice {self.last_anomaly_end}")
+                print(f"drift ends at {self.last_anomaly_end}")
                 self.last_notification = None
                 self.drift_detected = False
             self.outlier_count = 0
@@ -49,15 +51,18 @@ class DriftDetector:
         return self.drift_detected   
     
     def plot_anomalies(self,df):
-        print("Anomalie rilevate (inizio, fine):", self.anomalies)
+        print("drifts (start, end):", self.anomalies)
 
         plt.figure(figsize=(10, 5))
-        plt.plot(df, label='sensor0')
+        plt.plot(df, label='sensor')
         for start, end in self.anomalies:
             plt.axvspan(start, end, color='red', alpha=0.3, label='Anomaly' if start == self.anomalies[0][0] else '')
         plt.xlabel('Index')
         plt.ylabel('Value')
-        plt.title('Sensor0 with Anomalies')
+        plt.title('Anomalies')
         plt.legend()
         plt.grid(True)
-        plt.savefig('p.png')
+        
+        current_time = datetime.now().strftime("%Y%m%d_%H%M%S")
+        img_path = Path(__file__).parent.parent.parent.joinpath('data', 'plots', f'anomalies_{current_time}.png')
+        plt.savefig(img_path)

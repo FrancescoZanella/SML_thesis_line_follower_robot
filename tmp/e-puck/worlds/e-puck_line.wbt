@@ -24,6 +24,7 @@ DEF floor RectangleArena {
   floorSize 0.9 0.9
   floorTileSize 0.9 0.85
   floorAppearance PBRAppearance {
+    baseColor 0.39215686274509803 0.39215686274509803 0.39215686274509803
     baseColorMap ImageTexture {
       url [
         "../resources/test.png"
@@ -49,7 +50,7 @@ DEF my_epuck E-puck {
     "model_path: 19.42926_raw_arf_2024-08-30_16-37-21"
     "plot: True"
     "save_data: False"
-    "verbose: True"
+    "verbose: False"
     "learning: True"
     "enable_recovery: False"
   ]
@@ -63,7 +64,7 @@ DEF my_epuck E-puck {
 }
 Robot {
   name "supervisor"
-  controller "supervisor"
+  controller "change_color"
   supervisor TRUE
 }
 DEF sign Transform {
@@ -75,7 +76,7 @@ DEF sign Transform {
       appearance Appearance {
         texture ImageTexture {
           url [
-            "C:/Users/franc/Desktop/TESI/SML_thesis_line_follower_robot/tmp/e-puck/resources/no_drift.png"
+            "C:/Users/franc/Desktop/TESI/SML_thesis_line_follower_robot/tmp/e-puck/resources/drift.png"
           ]
           repeatS FALSE
           repeatT FALSE

@@ -1,5 +1,6 @@
 from controller import Supervisor
 from pathlib import Path
+import sys
 
 TIME_STEP = 32
 DRIFT_FILE = Path(__file__).parent.parent / 'controller_with_camera' / 'drift_status.txt'
@@ -18,7 +19,6 @@ def main():
     
     url_field = texture_node.getField('url')
 
-    drift_intervals = [(1000,5000),(7000,10000)]
     
     drift_active = False
     
@@ -30,16 +30,16 @@ def main():
             base_color_field.setSFColor([100/255,100/255,100/255])
             url_field.setMFString(0, str(STATUS_FILE / 'drift.png'))
             drift_active = True
-            print(f'{i} Drift attivo')
         if not any(start <= i < end for start, end in drift_intervals) and drift_active:
             url_field.setMFString(0, str(STATUS_FILE / 'no_drift.png'))
             drift_active = False
             base_color_field.setSFColor([255/255,255/255,255/255])
-            print(f'{i} Drift spento')
         i+=1
 
     
 if __name__ == "__main__":
+    global drift_intervals
+    drift_intervals = eval(sys.argv[1])
     main()
 
 

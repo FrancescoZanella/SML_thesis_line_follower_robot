@@ -1,6 +1,4 @@
-from datetime import datetime
-import pandas as pd
-from controller import Robot
+from controller import Robot, Camera
 from river import metrics
 import pickle
 import matplotlib.pyplot as plt
@@ -12,11 +10,17 @@ from collections import deque
 import math
 import numpy as np
 from drift_detector import DriftDetector
+from datetime import datetime
+import pandas as pd
+import tensorflow as tf
+from tensorflow import keras as tfk
+from PIL import Image
+import io
 
 TIME_STEP = 32
 MAX_SPEED = 6.28
 LFM_FORWARD_SPEED = 200
-LFM_K_GS_SPEED = 0.6#1e-6
+LFM_K_GS_SPEED = 1e-6
 NB_GROUND_SENS = 3
 
 def initialize_devices(robot):
@@ -27,6 +31,8 @@ def initialize_devices(robot):
     left_motor.setVelocity(0.0)
     right_motor.setVelocity(0.0)
 
+    camera = robot.getDevice('camera')
+    camera.enable(TIME_STEP)
 
     sensors = []
     for i in range(NB_GROUND_SENS):
@@ -34,7 +40,7 @@ def initialize_devices(robot):
         sensor.enable(TIME_STEP)
         sensors.append(sensor)
 
-    return sensors,left_motor,right_motor
+    return sensors,left_motor,right_motor,camera
 
 def load_model():
     with open(f'{MODEL_PATH}', 'rb') as f:
@@ -44,7 +50,7 @@ def load_model():
 
 def load_left_velocity(irs_values):
     DeltaS = irs_values[2] - irs_values[0]
-    speed_l = LFM_FORWARD_SPEED - LFM_K_GS_SPEED * math.pow(DeltaS, 1)
+    speed_l = LFM_FORWARD_SPEED - LFM_K_GS_SPEED * math.pow(DeltaS, 3)
     return speed_l
 
 def create_directories():
@@ -59,15 +65,15 @@ def create_directories():
     plots_path.mkdir(parents=True, exist_ok=True)
     images_path.mkdir(parents=True,exist_ok=True)
 
-def get_sensors_data(sensors):
+def get_sensors_data(sensors,camera):
     sensor_data_t = []
     for i in range(NB_GROUND_SENS):
         sensor_data_t.append(sensors[i].getValue())
 
     s_dict = {f'sensor{j}': val for j,val in enumerate(sensor_data_t)}
+    image = camera.getImage()
     
-    
-    return s_dict,sensor_data_t
+    return s_dict,sensor_data_t,image
 
 def check_lost_track(irs_values):
     irs_values = np.array(irs_values)
@@ -75,6 +81,35 @@ def check_lost_track(irs_values):
         return True
     else:
         return False
+    
+def img_to_emb(image, camera):
+    model = tfk.models.load_model(r"C:\Users\franc\Desktop\prova.keras")
+    
+    # Get image dimensions
+    width = camera.getWidth()
+    height = camera.getHeight()
+    
+    # Convert raw bytes to numpy array
+    np_image = np.frombuffer(image, np.uint8).reshape((height, width, 4))
+    
+    # Remove alpha channel if present
+    if np_image.shape[2] == 4:
+        np_image = np_image[:, :, :3]
+    
+    # Resize the image
+    np_image = tf.image.resize(np_image, (48, 48))
+    
+    # Normalize the image
+    np_image = tf.cast(np_image, tf.float32) / 255.0  
+    
+    flatten_layer = tf.keras.Sequential(model.layers[:8])
+    
+    embedding = flatten_layer(tf.expand_dims(np_image, axis=0))
+    
+    embedding = tf.squeeze(embedding, axis=0).numpy()
+    features_dict = {f'embedding_{i}': value for i, value in enumerate(embedding)}
+    return features_dict
+
 
 def run_robot(robot):
     mae_log = []
@@ -88,7 +123,7 @@ def run_robot(robot):
     min_outlier_duration = 20
     min_gap_duration = 25 
     
-    sensors, left_motor, right_motor = initialize_devices(robot)
+    sensors, left_motor, right_motor,camera = initialize_devices(robot)
 
     if PRODUCTION == 'True':
         pretrained_model, metric = load_model()
@@ -103,11 +138,15 @@ def run_robot(robot):
     drift_detector = DriftDetector(valore_nero, valore_bianco, tolleranza, min_outlier_duration, min_gap_duration)
 
     while robot.step(TIME_STEP) != -1:
-        X, irs_values = get_sensors_data(sensors=sensors)
-
+        X, irs_values, image = get_sensors_data(sensors=sensors, camera=camera)
+        features = img_to_emb(image, camera)
+        X = {**X, **features}
+        
+        if SAVE_IMAGES == 'True':
+            camera.saveImage(str(Path(MODEL_PATH).parent.parent.joinpath('images').joinpath(f"image{i}.jpg")),100)
+        
         sensors_data.append(irs_values)
         drift_detector.update(irs_values[0])
-               
         if PRODUCTION == 'True':
             if drift_detector.drift_detected and last_is_drift:
                 vel_pred = model.predict_one(X)
@@ -122,7 +161,8 @@ def run_robot(robot):
                 model = load_model()[0]
                 last_is_drift = True
             if LEARNING == 'True' and drift_detector.drift_detected and last_is_drift:
-                #print('learning')
+                #print('learning') 
+                
                 model.learn_one(X, vel_true)
             if LEARNING == 'True' and not drift_detector.drift_detected and last_is_drift:
                 last_is_drift = False
@@ -204,7 +244,7 @@ def run_robot(robot):
     
 
 def main():
-    global MODEL_PATH, PRODUCTION, PLOT, SAVE_SENSORS, LEARNING, VERBOSE, ENABLE_RECOVERY
+    global MODEL_PATH, PRODUCTION, PLOT, SAVE_SENSORS, LEARNING, VERBOSE, ENABLE_RECOVERY, SAVE_IMAGES
 
     MODEL_PATH = Path(__file__).parent.parent.parent / 'data' / 'models'
     PRODUCTION = re.search(r"(?<=:\s).*$", sys.argv[1]).group(0)

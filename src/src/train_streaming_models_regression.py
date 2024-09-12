@@ -30,7 +30,8 @@ def main(dataset_path, output_dir,model_name):
 
 
     logging.info(f"Number of columns: {len(df.columns)}")
-
+    if len(df.columns) == 9:
+        name = 'umap_5'
     if len(df.columns) == 24:
         name = 'umap_20'
     if len(df.columns) == 14:
@@ -73,7 +74,7 @@ def main(dataset_path, output_dir,model_name):
         )
     }
     model = (preprocessing.StandardScaler() | models[model_name])
-    metric = metrics.RMSE()
+    metric = metrics.MAE()
 
 
     streams = stream.iter_pandas(X=df[column_names],y=df['target'])

@@ -43,9 +43,11 @@ def main(dataset_path, output_dir, image_folder,model_path,dimensionality_reduct
     for img_name in tqdm(os.listdir(image_folder)):
         img_path = os.path.join(image_folder, img_name)
         image = Image.open(img_path)
-  
+        image = image.resize((48, 48))
         image = tf.cast(image, tf.float32) / 255.0
-    
+
+        
+        
         flatten_layer = tf.keras.Sequential(model.layers[:8])
     
         embedding = flatten_layer(tf.expand_dims(image, axis=0))
@@ -56,6 +58,11 @@ def main(dataset_path, output_dir, image_folder,model_path,dimensionality_reduct
         
         indices.append(index)
         embeddings_list.append(embedding)
+
+        
+
+    print(embedding.shape)
+    print(len(embeddings_list))
     
      
     

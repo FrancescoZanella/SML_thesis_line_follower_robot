@@ -38,7 +38,6 @@ class RobotController:
 
         self.drift_detector_left = DriftDetector(300, 850, 50, 20, 25)
         self.drift_detector_right = DriftDetector(300, 850, 50, 20, 25)
-        # Initialize other necessary attributes
         self.mae_log = []
         self.labels = []
         self.sensors_data = []
@@ -113,7 +112,6 @@ class RobotController:
             self.sensors_data.append(irs_values)
             self.drift_detector_left.update(irs_values[0])
             self.drift_detector_right.update(irs_values[2])
-
             if self.production:
                 vel = self.handle_production_mode(X, irs_values, last_is_drift)
                 last_is_drift = self.update_drift_status(last_is_drift)
@@ -127,7 +125,7 @@ class RobotController:
         self.post_run_actions()
 
     def handle_production_mode(self, X, irs_values, last_is_drift):
-        if (self.drift_detector_left.drift_detected or self.drift_detector_right.drift_detected ) and last_is_drift and self.learning:
+        if (self.drift_detector_left.drift_detected or self.drift_detector_right.drift_detected) and last_is_drift and self.learning:
             vel_pred = self.model.predict_one(X)
             vel_true = self.load_true_labels(irs_values, sensible=False)
         else:
@@ -138,13 +136,14 @@ class RobotController:
         self.metric.update(vel_true, vel_pred)
 
         if self.learning:
-            if  (self.drift_detector_left.drift_detected or self.drift_detector_right.drift_detected ) and not last_is_drift:
-                print('new model created')
+            if (self.drift_detector_left.drift_detected or self.drift_detector_right.drift_detected) and not last_is_drift:
                 self.model = self.load_model()[0]
-            elif  (self.drift_detector_left.drift_detected or self.drift_detector_right.drift_detected ) and last_is_drift:
+                self.metric = metrics.MAE()
+            elif (self.drift_detector_left.drift_detected or self.drift_detector_right.drift_detected) and last_is_drift:
                 self.model.learn_one(X, vel_true)
-            elif not (self.drift_detector_left.drift_detected or self.drift_detector_right.drift_detected ) and last_is_drift:
+            elif not (self.drift_detector_left.drift_detected or self.drift_detector_right.drift_detected) and last_is_drift:
                 del self.model
+                self.metric = metrics.MAE()
 
         if self.verbose:
             print(f'MAE: {self.metric.get()}')
@@ -152,9 +151,9 @@ class RobotController:
         return vel_pred
 
     def update_drift_status(self, last_is_drift):
-        if (self.drift_detector_left.drift_detected or self.drift_detector_right.drift_detected ) and not last_is_drift:
+        if (self.drift_detector_left.drift_detected or self.drift_detector_right.drift_detected) and not last_is_drift:
             return True
-        elif not (self.drift_detector_left.drift_detected or self.drift_detector_right.drift_detected ) and last_is_drift:
+        elif not (self.drift_detector_left.drift_detected or self.drift_detector_right.drift_detected) and last_is_drift:
             return False
         else:
             return last_is_drift
@@ -188,26 +187,32 @@ class RobotController:
     def post_run_actions(self):
         if self.plot:
             self.create_plots()
-            self.plot_combined_anomalies()  # Add this line
+            #self.plot_combined_anomalies()
         if self.save_sensors and not self.production:
             self.save_sensor_data()
 
     def create_plots(self):
-
         plt.figure(figsize=(12, 6))
-        plt.plot(self.mae_log, label='MAE')
+        plt.plot(self.mae_log, label='MAE', zorder=10)
         plt.title('MAE over time with Drift Detection')
         plt.xlabel('Time steps')
         plt.ylabel('MAE')
         
-        # Create a red background for drift intervals
-        for start, end in (self.drift_detector_left.anomalies or self.drift_detector_right.anomalies):
-            plt.axvspan(start, end, facecolor='red', alpha=0.2)
+        merged = []
+        for interval in sorted(self.drift_detector_left.anomalies + self.drift_detector_right.anomalies):
+            if not merged or merged[-1][1] < interval[0]:
+                merged.append(interval)
+            else:
+                merged[-1] = (merged[-1][0], max(merged[-1][1], interval[1]))
+    
+
+        for start, end in merged:
+            plt.axvspan(start, end, facecolor='red', alpha=0.2, label='Drift Zones')
         
-        # Plot MAE on top of the background
-        plt.plot(self.mae_log, label='MAE', zorder=10)
+        handles, labels = plt.gca().get_legend_handles_labels()
+        by_label = dict(zip(labels, handles))
+        plt.legend(by_label.values(), by_label.keys(), loc='upper left')
         
-        plt.legend()
         current_time = datetime.now().strftime("%Y%m%d_%H%M%S")
 
         if self.learning:
@@ -230,51 +235,36 @@ class RobotController:
                 csv_writer.writerow(irs + [vel])
 
     def plot_combined_anomalies(self):
-        print("Iniziando il metodo plot_combined_anomalies")
-        
-        # Crea il plot
+       
         fig, ax = plt.subplots(figsize=(12, 6))
         
-        # Dati dei sensori
         time_steps = list(range(len(self.sensors_data)))
         left_sensor_data = [x[0] for x in self.sensors_data]
         right_sensor_data = [x[2] for x in self.sensors_data]
         
-        print(f"Numero di punti dati dei sensori: {len(self.sensors_data)}")
-
-        # Plotta i dati dei sensori
         ax.plot(time_steps, left_sensor_data, label='Sensore Sinistro', color='blue')
         ax.plot(time_steps, right_sensor_data, label='Sensore Destro', color='green')
 
-        # Plotta le anomalie da entrambi i detector
         left_anomalies = self.drift_detector_left.anomalies
         right_anomalies = self.drift_detector_right.anomalies
-        print(f"Numero di anomalie a sinistra: {len(left_anomalies)}")
-        print(f"Numero di anomalie a destra: {len(right_anomalies)}")
+        
 
-        for start, end in left_anomalies:
-            ax.axvspan(start, end, color='red', alpha=0.2)
+        all_anomalies = left_anomalies + right_anomalies
+        for start, end in all_anomalies:
+            ax.axvspan(start, end, facecolor='red',alpha=0.2)
 
-        for start, end in right_anomalies:
-            ax.axvspan(start, end, color='orange', alpha=0.2)
-
-        # Configura il layout
         ax.set_title('Dati dei Sensori e Drift Rilevati')
         ax.set_xlabel('Passi temporali')
         ax.set_ylabel('Valore del Sensore')
         ax.legend()
 
-        # Salva come immagine PNG
         current_time = datetime.now().strftime("%Y%m%d_%H%M%S")
         plot_name = f'sensori_e_drift_{current_time}.png'
         plot_path = str(Path(self.model_path).parent.parent.joinpath('plots', plot_name))
         
-        try:
-            plt.savefig(plot_path)
-            print(f"Plot salvato in: {plot_path}")
-        except Exception as e:
-            print(f"Errore nel salvare il plot: {str(e)}")
+        
+        plt.savefig(plot_path)
+        
 
         plt.close(fig)
-        print("Metodo plot_combined_anomalies terminato")
 

@@ -8,7 +8,9 @@ def parse_arguments():
         key, value = arg.split(':')
         args[key.strip()] = value.strip()
     return args
-
+def print_arguments(args):
+    for key, value in args.items():
+        print(f"{key.upper()}: {value}")
 def main():
     args = parse_arguments()
     
@@ -24,7 +26,7 @@ def main():
         learning=args['learning'] == 'True',
         enable_recovery=args['enable_recovery'] == 'True'
     )
-    
+    print_arguments(args)
     controller.run()
 
 if __name__ == "__main__":

@@ -1,3 +1,6 @@
+from controller import Robot
+import os
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 from collections import deque
 import csv
 from datetime import datetime
@@ -8,10 +11,11 @@ from river import metrics
 from matplotlib import pyplot as plt
 import numpy as np
 import pandas as pd
-from controller import Robot
 from drift_detector import DriftDetector
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+import tensorflow as tf
+from tensorflow import keras as tfk
 
 class RobotController:
     TIME_STEP = 32
@@ -29,12 +33,12 @@ class RobotController:
         self.verbose = verbose
         self.learning = learning
         self.enable_recovery = enable_recovery
-        self.mem = 0  # Add this line to initialize mem
+        self.mem = 0
         self.MAX_MEM = 2000
         self.decay_rate = -math.log(0.001) / self.MAX_MEM
 
         self.robot = Robot()
-        self.sensors, self.left_motor, self.right_motor = self.initialize_devices()
+        self.sensors,self.camera,self.left_motor, self.right_motor = self.initialize_devices()
         self.create_directories()
 
         if self.production:
@@ -56,13 +60,16 @@ class RobotController:
         left_motor.setVelocity(0.0)
         right_motor.setVelocity(0.0)
 
+        camera = self.robot.getDevice('camera')
+        camera.enable(self.TIME_STEP)
+
         sensors = []
         for i in range(self.NB_GROUND_SENS):
             sensor = self.robot.getDevice(f'gs{i}')
             sensor.enable(self.TIME_STEP)
             sensors.append(sensor)
 
-        return sensors, left_motor, right_motor
+        return sensors,camera, left_motor, right_motor
 
     def load_model(self):
         with open(f'{self.model_path}', 'rb') as f:
@@ -88,9 +95,32 @@ class RobotController:
             sensor_data_t.append(self.sensors[i].getValue())
 
         s_dict = {f'sensor{j}': val for j, val in enumerate(sensor_data_t)}
-        
-        return s_dict, sensor_data_t
+        image = self.camera.getImage()
+        return s_dict, sensor_data_t, image
 
+    def img_to_emb(self,image):
+        model = tfk.models.load_model(r"C:\Users\franc\Desktop\prova.keras")
+    
+        width = self.camera.getWidth()
+        height = self.camera.getHeight()
+    
+        np_image = np.frombuffer(image, np.uint8).reshape((height, width, 4))
+    
+        if np_image.shape[2] == 4:
+            np_image = np_image[:, :, :3]
+    
+        np_image = tf.image.resize(np_image, (48, 48))
+    
+        np_image = tf.cast(np_image, tf.float32) / 255.0  
+    
+        flatten_layer = tf.keras.Sequential(model.layers[:8])
+    
+        embedding = flatten_layer(tf.expand_dims(np_image, axis=0))
+    
+        embedding = tf.squeeze(embedding, axis=0).numpy()
+        features_dict = {f'embedding_{i}': value for i, value in enumerate(embedding)}
+        return features_dict
+    
     def check_lost_track(self, irs_values):
         irs_values = np.array(irs_values)
         if irs_values.std() / irs_values.mean() * 100 < 10:
@@ -112,10 +142,19 @@ class RobotController:
         last_is_drift = False
 
         while self.robot.step(self.TIME_STEP) != -1:
-            X, irs_values = self.get_sensors_data()
+            X, irs_values,image = self.get_sensors_data()
+            #features = self.img_to_emb(image)
+            #X = {**X, **features}
+
+            if self.save_images == 'True':
+                self.camera.saveImage(str(Path(self.model_path).parent.parent.joinpath('images').joinpath(f"image{i}.jpg")),100)
+        
+            
             self.sensors_data.append(irs_values)
+
             self.drift_detector_left.update(irs_values[0])
             self.drift_detector_right.update(irs_values[2])
+            
             if self.production:
                 vel = self.handle_production_mode(X, irs_values, last_is_drift)
                 last_is_drift = self.update_drift_status(last_is_drift)
@@ -144,12 +183,11 @@ class RobotController:
                 print(f'Resetting model at step')
                 self.model = self.load_model()[0]
                 self.metric = metrics.MAE()
-                self.mem = 0  # Reset mem when a new drift is detected
+                self.mem = 0
             elif (self.drift_detector_left.drift_detected or self.drift_detector_right.drift_detected) and last_is_drift:
                 if self.mem <= self.MAX_MEM:
                     weight = 3 * math.exp(-self.decay_rate * self.mem)
                     self.model.learn_one(X, vel_true,sample_weight=weight)
-                    print(f'Weight: {weight}')
                     self.mem += 1
             elif not (self.drift_detector_left.drift_detected or self.drift_detector_right.drift_detected) and last_is_drift:
                 print(f'Deleting model at step')
@@ -262,7 +300,6 @@ class RobotController:
         left_sensor_data = [x[0] for x in self.sensors_data]
         right_sensor_data = [x[2] for x in self.sensors_data]
         
-        # Plot for left sensor
         ax1.plot(time_steps, left_sensor_data, label='Sensore Sinistro', color='blue')
         ax1.set_title('Dati del Sensore Sinistro e Drift Rilevati')
         ax1.set_xlabel('Passi temporali')
@@ -271,9 +308,8 @@ class RobotController:
         for start, end in merged:
             ax1.axvspan(start, end, facecolor='red', alpha=0.2, label='Drift Zones')
         
-        ax1.legend()
+        ax1.legend(loc='upper left')
         
-        # Plot for right sensor
         ax2.plot(time_steps, right_sensor_data, label='Sensore Destro', color='green')
         ax2.set_title('Dati del Sensore Destro e Drift Rilevati')
         ax2.set_xlabel('Passi temporali')
@@ -282,7 +318,7 @@ class RobotController:
         for start, end in merged:
             ax2.axvspan(start, end, facecolor='red', alpha=0.2, label='Drift Zones')
         
-        ax2.legend()
+        ax2.legend(loc='upper left')
 
         plt.tight_layout()
 

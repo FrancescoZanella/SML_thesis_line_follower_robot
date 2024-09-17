@@ -1,4 +1,3 @@
-
 # SML Thesis Line Follower Robot
 
 This repository contains the code and resources for a line-following robot using streaming machine learning techniques, the robot thanks to incremental learnign and catastrophic forgetting avoidance techniques is able to follow the line even when concept drift appear. 
@@ -125,4 +124,24 @@ The robot can operate in two different modes:
    - These plots visualize the model's accuracy over time, both with and without drift.
    - Review these plots to evaluate the model's performance and the effectiveness of incremental learning.
 
+
+
+
+
+## Drift Intervals
+
+The current simulation includes predefined drift intervals to test the robot's ability to adapt to changing conditions. These intervals are:
+
+- First drift interval: 500-3000 steps
+- Second drift interval: 3500-4500 steps
+
+During these intervals, the envirnoment change from a day setup to a night setup, challenging the robot's line-following capabilities.
+
+### Customizing Drift Intervals
+
+You can easily modify these drift intervals to introduce concept drift at different times during the simulation. To do this:
+
+1. In the Webots interface, locate the `supervisor` node in the scene tree.
+2. Expand the `supervisor` node and find the `controllerArgs` field.
+3. Modify the values in this field to set your desired drift intervals.
 

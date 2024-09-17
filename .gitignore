@@ -1,4 +1,6 @@
-thesis/
-webots/data/
+tesi/
 call.docx
-tmp/e-puck/data/
+e-puck/data/data/
+e-puck/data/images/
+e-puck/plugins/
+

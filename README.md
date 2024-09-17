@@ -8,7 +8,6 @@ The robot can operate in two modes:
 - Production mode: the robot uses a pre-trained model built with River to navigate, continuously updating the model as the robot moves.
 
 ## Getting Started
-CHANGE WEBOTS PYTHON PATH TO THE PYTHON IN THE VENV
 ### Prerequisites
 
 1. **Webots**: Download and install Webots from [this page](https://cyberbotics.com/).
@@ -21,6 +20,8 @@ CHANGE WEBOTS PYTHON PATH TO THE PYTHON IN THE VENV
 
     ```bash
     git clone https://github.com/FrancescoZanella/SML_thesis_line_follower_robot.git
+
+    cd SML_thesis_line_follower_robot
     ```
 
 2. **Create a virtual environment and install dependencies**:
@@ -49,9 +50,18 @@ CHANGE WEBOTS PYTHON PATH TO THE PYTHON IN THE VENV
 
 ### Setup in Webots
 
-1. **Open Webots**:
+1. **Open and configure Webots**:
     - Go to `File -> Open World`.
-    - Navigate to `webots/circuit/worlds/circuit.wbt` and open it.
+    - Navigate to `../SML_thesis_line_follower_robot/e-puck/worlds/` 
+    - Then go to `Tools -> Preferences` and set python command to:
+
+      On Windows:
+        - `…\SML_thesis_line_follower_robot\tesi\Scripts\python.exe`
+
+      On MacOs/Linux:
+        - `…/SML_thesis_line_follower_robot/tesi/bin/python`
+
+      **N.B.** *write the full path to python executable inside the venv just created.*
 
 2. **Configure the Robot Controller**:
     - In the left dropdown menu, select the `epuck` node.
@@ -61,13 +71,17 @@ CHANGE WEBOTS PYTHON PATH TO THE PYTHON IN THE VENV
 
         - **MODEL_PATH**: Specifies the file path to the pre-trained model that the robot will load and use for making predictions. This path is crucial when the robot is running in production mode.
 
-        - **PLOT**: If set to `True`, the program generates and saves a plot of the model's accuracy over time during the robot’s operation. This visual representation helps in evaluating the model's performance as the robot executes its tasks.
+        - **PLOT**: If set to `True`, the program generates and saves plots in `plots/` folder of the model's accuracy over time during the robot’s operation with drift or without drift. This visual representation helps in evaluating the model's performance as the robot executes its tasks.
 
         - **SAVE_SENSORS**: When `True`, this parameter instructs the robot to save the sensor data it collects during the run. This data is then used to train a model or improve an existing one.
 
-        - **SAVE_IMAGES**: If set to `True`, the program saves the images captured by the robot's camera throughout its operation. These images are crucial as they are processed by a pre-trained Convolutional Neural Network (CNN) to generate features that are used for training or improving the streaming machine learning model.
+        - **SAVE_IMAGES**: If set to `True`, the program saves the images captured by the robot's camera throughout its operation. These images can then be used to build embeddings or for future usage.
 
         - **VERBOSE**: When `True`, the robot provides detailed output during its operation, including predicted labels, actual labels, and the model’s accuracy at each step. This is helpful for debugging and understanding how the robot is performing its tasks in real-time.
+
+        - **LEARNING**: Determines whether the model should operate in online learning mode during inference. If set to `True`, the model will continue to learn and adapt in the presence of drift, allowing it to update its knowledge base in real-time. If set to `False`, the model will behave like a traditional batch machine learning model, maintaining its initial training without further updates.
+
+        - **ENABLE_RECOVERY**: When set to `True`, this parameter activates an additional algorithm that utilizes the robot's recent velocity data. If the robot loses track of the line, this feature enables it to attempt recovery by using the stored velocity information to guide its movements. This can be particularly useful in maintaining the robot's intended path even in challenging situations where the line may be temporarily lost.
 
 ## Operating Modes
 
@@ -75,38 +89,35 @@ The robot can operate in two different modes:
 
 ### 1. Training Mode
 
-- **PRODUCTION = False**: The robot uses a PID controller to navigate and collects data for training a model, *SAVE_SENSORS = True* and *SAVE_IMAGES = True* to collect sensors data and images used in future training.
+- **PRODUCTION = False**: The robot employs a controller that monitors the difference between the values recorded on the right and left sides of the line. This controller enables the robot to navigate while simultaneously collecting valuable data. The collected data, including sensor readings and images (when *SAVE_SENSORS = True* and *SAVE_IMAGES = True*), is crucial for training the machine learning model that will be used in production mode.
 
-**Steps to run in Training Mode**:
-1. Run the robot in Webots with `PRODUCTION=False`, `SAVE_SENSORS=True`, and `SAVE_IMAGES=True` to collect data.
-2. Once you have collected enough data, stop the simulation.
-3. Generate embeddings:
+**Steps to run in Training Mode and collect data**:
 
-    - Activate the virtual environment:
+• Run the robot in Webots with `PRODUCTION=False`, `SAVE_SENSORS=True`, and `SAVE_IMAGES=True` to collect data.
 
-        ```bash
-        source env_name/bin/activate  # For macOS/Linux
-        env_name\Scripts\activate  # For Windows
-        ```
+• Once you have collected enough data, stop the simulation.
 
-    - Run the script to add image embeddings:
+• The collected data will be stored in the `data\sensor_data` with the name of the current date and time. This structure ensures easy access and management of your training datasets.
 
-        ```bash
-        python run_add_image_embeddings.py  # Generates UMAP and full embeddings
-        ```
+• Run `.\SML_thesis_line_follower_robot\src\scripts\run_train_streaming_models_regression` script, passing the CSV file with the collected data and the type of model as input. This script will train the model using the specified parameters and save the model in `models` folder.
 
-4. Train the streaming model using the collected data:
-
-    ```bash
-    python run_train_streaming_model.py
-    ```
 
 ### 2. Production Mode
 
-- **PRODUCTION = True**: The robot uses the pre-trained model to navigate based on the collected features and image embeddings.
+- **PRODUCTION = True**: The robot utilizes a combination of a pre-trained model (built with data collected during training) and incremental learning. It navigates based on the pre-trained model while continuously adapting its model in response to detected drift. This approach allows the robot to maintain optimal performance by leveraging both its initial training and real-time learning from new environmental conditions.
 
 **Steps to run in Production Mode**:
-1. Ensure the model is trained and saved at the specified `MODEL_PATH`.
+1. Prepare the model:
+   a) If you already have a trained model:
+      - Ensure the model is saved in the `models` folder.
+      - Verify that the `MODEL_PATH` in the controller arguments points to your existing model.
+
+   b) If you want to create a new model from scratch:
+      - Run the robot in Training Mode (PRODUCTION=False) to collect data.
+      - Use the collected data to train a new model.
+      - Save the newly trained model in the `models` folder.
+      - Update the `MODEL_PATH` in the controller arguments to point to your new model.
 2. Run the robot in Webots with `PRODUCTION=True`.
+3. Set the `LEARNING=False` if you want to deactivate the incremental learning.
 
 

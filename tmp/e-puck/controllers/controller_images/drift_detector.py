@@ -27,7 +27,6 @@ class DriftDetector:
             self.outlier_count += 1
             if self.outlier_count == self.min_duration and self.anomaly_start is None:
                 if self.current_index - self.min_duration + 1 <= self.last_anomaly_end + self.min_gap:
-                    # Extend the previous anomaly
                     self.anomaly_start = self.anomalies[-1][0]
                     self.anomalies.pop()
                 else:

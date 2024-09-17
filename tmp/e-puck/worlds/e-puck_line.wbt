@@ -14,7 +14,7 @@ WorldInfo {
 }
 Viewpoint {
   orientation 0.2925350753299163 0.2157730011632685 -0.9315928518782851 1.7731387821939846
-  position -0.03135366294409617 1.9497423929365758 1.3212075387869349
+  position -0.008225688206527648 2.1468405338228416 1.448085818090884
 }
 TexturedBackground {
 }
@@ -24,6 +24,7 @@ DEF floor RectangleArena {
   floorSize 0.9 0.9
   floorTileSize 0.9 0.85
   floorAppearance PBRAppearance {
+    baseColor 0.39215686274509803 0.39215686274509803 0.39215686274509803
     baseColorMap ImageTexture {
       url [
         "../resources/test.png"
@@ -47,12 +48,12 @@ DEF my_epuck E-puck {
   controllerArgs [
     "production: True"
     "model: 3.13841_raw_arf_2024-09-12_11-06-59"
-    "plot: True"
+    "plot: False"
     "save_sensors: False"
     "save_images: False"
     "verbose: True"
-    "learning: True"
-    "enable_recovery: False"
+    "learning: False"
+    "enable_recovery: True"
   ]
   window "<none>"
   camera_fieldOfView 0.94
@@ -66,7 +67,7 @@ Robot {
   name "supervisor"
   controller "change_color"
   controllerArgs [
-    "[(100,1000),(2000,3000)]"
+    "[(500,3000),(3500,4500)]"
   ]
   supervisor TRUE
 }
@@ -79,7 +80,7 @@ DEF sign Transform {
       appearance Appearance {
         texture ImageTexture {
           url [
-            "C:/Users/franc/Desktop/TESI/SML_thesis_line_follower_robot/tmp/e-puck/resources/no_drift.png"
+            "C:/Users/franc/Desktop/TESI/SML_thesis_line_follower_robot/tmp/e-puck/resources/drift.png"
           ]
           repeatS FALSE
           repeatT FALSE

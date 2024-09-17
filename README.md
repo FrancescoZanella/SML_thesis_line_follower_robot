@@ -3,7 +3,7 @@
 
 This repository contains the code and resources for a line-following robot using streaming machine learning techniques, the robot thanks to incremental learnign and catastrophic forgetting avoidance techniques is able to follow the line even when concept drift appear. 
 
-The robot can operate in two modes: 
+The robot can operate in two modes:
 - Training mode, where it collects data used to train models
 - Production mode: the robot uses a pre-trained model built with River to navigate, continuously updating the model as the robot moves adapting to the drift.
 
@@ -52,7 +52,7 @@ The robot can operate in two modes:
 
 1. **Open and configure Webots**:
     - Go to `File -> Open World`.
-    - Navigate to `../SML_thesis_line_follower_robot/e-puck/worlds/` 
+    - Navigate to `../SML_thesis_line_follower_robot/e-puck/worlds/e-puck_line.wbt` 
     - Then go to `Tools -> Preferences` and set python command to:
 
       On Windows:
@@ -118,7 +118,11 @@ The robot can operate in two different modes:
       - Use the collected data to train a new model.
       - Save the newly trained model in the `models` folder.
       - Update the `MODEL_PATH` in the controller arguments to point to your new model.
-3. Run the robot in Webots with `PRODUCTION=True`.
-4. Set the `LEARNING=False` if you want to deactivate the incremental learning.
+2. Run the robot in Webots with `PRODUCTION=True`.
+3. Set the `LEARNING=False` if you want to deactivate the incremental learning.
+4. Monitor and analyze performance:
+   - If `PLOT=True`, the program will generate and save plots in the `plots/` folder.
+   - These plots visualize the model's accuracy over time, both with and without drift.
+   - Review these plots to evaluate the model's performance and the effectiveness of incremental learning.
 
 

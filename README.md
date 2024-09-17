@@ -99,7 +99,7 @@ The robot can operate in two different modes:
 
 • The collected data will be stored in the `data\sensor_data` with the name of the current date and time. This structure ensures easy access and management of your training datasets.
 
-• Run `.\SML_thesis_line_follower_robot\src\scripts\run_train_streaming_models_regression` script, passing the CSV file with the collected data and the type of model as input. This script will train the model using the specified parameters and save the model in `models` folder.
+• Run `.\SML_thesis_line_follower_robot\src\scripts\run_train_streaming_models_regression` script(.sh for Mac/Linux .bat for Windows), passing the CSV file with the collected data and the type of model as input. This script will train the model using the specified parameters and save the model in `models` folder.
 
 
 ### 2. Production Mode
@@ -108,16 +108,17 @@ The robot can operate in two different modes:
 
 **Steps to run in Production Mode**:
 1. Prepare the model:
+
    a) If you already have a trained model:
       - Ensure the model is saved in the `models` folder.
-      - Verify that the `MODEL_PATH` in the controller arguments points to your existing model.
+      - Verify that the `MODEL_PATH` in the controller arguments in the webots interface points to your existing model.
 
    b) If you want to create a new model from scratch:
       - Run the robot in Training Mode (PRODUCTION=False) to collect data.
       - Use the collected data to train a new model.
       - Save the newly trained model in the `models` folder.
       - Update the `MODEL_PATH` in the controller arguments to point to your new model.
-2. Run the robot in Webots with `PRODUCTION=True`.
-3. Set the `LEARNING=False` if you want to deactivate the incremental learning.
+3. Run the robot in Webots with `PRODUCTION=True`.
+4. Set the `LEARNING=False` if you want to deactivate the incremental learning.
 
 

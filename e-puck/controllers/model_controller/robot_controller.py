@@ -1,6 +1,6 @@
 from controller import Robot
 import os
-os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
+#os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 from collections import deque
 import csv
 from datetime import datetime
@@ -14,8 +14,8 @@ import pandas as pd
 from drift_detector import DriftDetector
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-import tensorflow as tf
-from tensorflow import keras as tfk
+#import tensorflow as tf
+#from tensorflow import keras as tfk
 
 class RobotController:
     TIME_STEP = 32
@@ -97,7 +97,7 @@ class RobotController:
         s_dict = {f'sensor{j}': val for j, val in enumerate(sensor_data_t)}
         image = self.camera.getImage()
         return s_dict, sensor_data_t, image
-
+    """
     def img_to_emb(self,image):
         model = tfk.models.load_model(r"C:\Users\franc\Desktop\prova.keras")
     
@@ -120,7 +120,7 @@ class RobotController:
         embedding = tf.squeeze(embedding, axis=0).numpy()
         features_dict = {f'embedding_{i}': value for i, value in enumerate(embedding)}
         return features_dict
-    
+    """
     def check_lost_track(self, irs_values):
         irs_values = np.array(irs_values)
         if irs_values.std() / irs_values.mean() * 100 < 10:

@@ -3,6 +3,5 @@ numpy
 pandas
 scikit-learn
 river
-tensorflow
 pathlib
 plotly

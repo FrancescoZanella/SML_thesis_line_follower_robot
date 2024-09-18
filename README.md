@@ -11,7 +11,7 @@ The robot can operate in two modes:
 
 1. **Webots**: Download and install Webots from [this page](https://cyberbotics.com/).
 2. **Git**: Make sure you have Git installed on your system.
-3. **Python**: Python 3.11 is required.
+3. **Python**: Python >=3.11 is required.
 
 ### Installation
 

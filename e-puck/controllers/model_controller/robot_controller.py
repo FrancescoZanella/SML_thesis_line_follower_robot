@@ -266,9 +266,9 @@ class RobotController:
         current_time = datetime.now().strftime("%Y%m%d_%H%M%S")
 
         if self.learning:
-            name = f'rmse_drift_plot_learning_{current_time}.png'
+            name = f'mae_drift_plot_learning_{current_time}.png'
         else:
-            name = f'rmse_drift_plot_no_learning_{current_time}.png'
+            name = f'mae_drift_plot_no_learning_{current_time}.png'
         plot_path = str(Path(self.model_path).parent.parent.joinpath('plots', name))
         plt.savefig(plot_path)
         plt.close()

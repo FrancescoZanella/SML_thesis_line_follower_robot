@@ -24,7 +24,6 @@ DEF floor RectangleArena {
   floorSize 0.9 0.9
   floorTileSize 0.9 0.85
   floorAppearance PBRAppearance {
-    baseColor 0.39215686274509803 0.39215686274509803 0.39215686274509803
     baseColorMap ImageTexture {
       url [
         "../resources/test.png"
@@ -48,12 +47,12 @@ DEF my_epuck E-puck {
   controllerArgs [
     "production: True"
     "model: 3.13841_raw_arf_2024-09-12_11-06-59"
-    "plot: False"
+    "plot: True"
     "save_sensors: False"
     "save_images: False"
     "verbose: True"
-    "learning: False"
-    "enable_recovery: True"
+    "learning: True"
+    "enable_recovery: False"
   ]
   window "<none>"
   camera_fieldOfView 0.94
@@ -80,7 +79,7 @@ DEF sign Transform {
       appearance Appearance {
         texture ImageTexture {
           url [
-            "C:/Users/franc/Desktop/TESI/SML_thesis_line_follower_robot/tmp/e-puck/resources/drift.png"
+            "../resources/no_drift.png"
           ]
           repeatS FALSE
           repeatT FALSE

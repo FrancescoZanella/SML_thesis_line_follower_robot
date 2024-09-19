@@ -1,6 +1,5 @@
 import numpy as np
 from river import base, tree, drift, metrics, evaluate
-from river.ensemble import AdaptiveRandomForestClassifier
 
 class OESPL(base.Classifier):
     def __init__(self, base_estimator=tree.HoeffdingTreeClassifier(), 
@@ -103,39 +102,3 @@ class OESPL(base.Classifier):
         
         y_pred = [estimator.predict_proba_one(x) for estimator in self.ensemble]
         return {c: np.mean([pred.get(c, 0) for pred in y_pred]) for c in set().union(*y_pred)}
-
-# Usage example
-from river import datasets
-from river import evaluate
-from river import metrics
-from river import preprocessing
-
-# Create an OESPL instance
-oespl = OESPL(
-    base_estimator=tree.HoeffdingTreeClassifier(),
-    ensemble_size=3,
-    lambda_fixed=6.0,
-    seed=42,
-    drift_detector=drift.ADWIN(),
-    patience=1000,
-    awakening=500,
-    reset_model=True
-)
-
-# Create a pipeline
-pipeline = preprocessing.StandardScaler() | oespl
-
-# Prepare the dataset
-dataset = datasets.Phishing()
-
-# Evaluate the model
-metric = metrics.Accuracy()
-
-evaluate.progressive_val_score(
-    dataset,
-    pipeline,
-    metric,
-    print_every=1000,
-    show_time=True,
-    show_memory=True
-      )

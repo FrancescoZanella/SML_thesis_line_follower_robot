@@ -97,30 +97,12 @@ class RobotController:
         s_dict = {f'sensor{j}': val for j, val in enumerate(sensor_data_t)}
         image = self.camera.getImage()
         return s_dict, sensor_data_t, image
-    """
-    def img_to_emb(self,image):
-        model = tfk.models.load_model(r"C:\Users\franc\Desktop\prova.keras")
     
-        width = self.camera.getWidth()
-        height = self.camera.getHeight()
     
-        np_image = np.frombuffer(image, np.uint8).reshape((height, width, 4))
-    
-        if np_image.shape[2] == 4:
-            np_image = np_image[:, :, :3]
-    
-        np_image = tf.image.resize(np_image, (48, 48))
-    
-        np_image = tf.cast(np_image, tf.float32) / 255.0  
-    
-        flatten_layer = tf.keras.Sequential(model.layers[:8])
-    
-        embedding = flatten_layer(tf.expand_dims(np_image, axis=0))
-    
-        embedding = tf.squeeze(embedding, axis=0).numpy()
-        features_dict = {f'embedding_{i}': value for i, value in enumerate(embedding)}
-        return features_dict
-    """
+
+
+
+
     def check_lost_track(self, irs_values):
         irs_values = np.array(irs_values)
         if irs_values.std() / irs_values.mean() * 100 < 10:

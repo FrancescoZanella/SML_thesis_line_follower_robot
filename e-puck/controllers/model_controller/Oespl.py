@@ -1,8 +1,9 @@
 import numpy as np
-from river import base, tree, drift, metrics, evaluate
+from river import base, tree, drift
+import copy
 
-class OESPL(base.Classifier):
-    def __init__(self, base_estimator=tree.HoeffdingTreeClassifier(), 
+class OESPL(base.Regressor):
+    def __init__(self, base_estimator=tree.HoeffdingTreeRegressor(), 
                  ensemble_size=1, lambda_fixed=6.0, seed=1, 
                  drift_detector=drift.ADWIN(), patience=3000, 
                  awakening=1000, reset_model=False):
@@ -26,7 +27,9 @@ class OESPL(base.Classifier):
         self.page_hinkley = []
 
     def _init_ensemble(self):
-        self.ensemble = [base.clone(self.base_estimator) for _ in range(self.ensemble_size)]
+        # primo learn_one inizializzo gli ensembles
+        self.ensemble = [copy.deepcopy(self.base_estimator) for _ in range(self.ensemble_size)]
+        #inizializzo per ogni ensemble alcuni parametri utili per il controllo del drift
         for i in range(self.ensemble_size):
             self.page_hinkley.append(drift.PageHinkley())
             self.mean_difference.append(True)
@@ -34,16 +37,16 @@ class OESPL(base.Classifier):
             self.awakening_counters.append(0)
             self.patience_counters.append(self.patience)
             self.n_instances.append(0)
-            self.drift_detectors.append(base.clone(self.drift_detector))
+            self.drift_detectors.append(copy.deepcopy(self.drift_detector))
 
     def learn_one(self, x, y):
         if self.ensemble is None:
             self._init_ensemble()
 
+        # per ogni ensemble
         for i in range(self.ensemble_size):
             self.n_instances[i] += 1
             
-            # Page Hinkley test
             tree_size = len(self.ensemble[i]) if hasattr(self.ensemble[i], '__len__') else 0
             self.page_hinkley[i].update(tree_size)
             
@@ -81,24 +84,25 @@ class OESPL(base.Classifier):
 
     def _drift_detection(self, x, y, i):
         y_pred = self.ensemble[i].predict_one(x)
-        correctly_classifies = int(y_pred == y)
+        error = abs(y_pred - y)
         
-        self.drift_detectors[i].update(1 - correctly_classifies)
+        self.drift_detectors[i].update(error)
         
         if self.drift_detectors[i].drift_detected:
             self.n_instances[i] = 0
-            self.drift_detectors[i] = base.clone(self.drift_detector)
+            self.drift_detectors[i] = copy.deepcopy(self.drift_detector)
             self.mean_difference[i] = True
             self.past_mean_difference[i] = None
             self.page_hinkley[i] = drift.PageHinkley()
             self.awakening_counters[i] = 0
             self.patience_counters[i] = self.patience
             if self.reset_model:
-                self.ensemble[i] = base.clone(self.base_estimator)
+                self.ensemble[i] = copy.deepcopy(self.base_estimator)
 
-    def predict_proba_one(self, x):
+    def predict_one(self, x):
         if self.ensemble is None:
             self._init_ensemble()
         
-        y_pred = [estimator.predict_proba_one(x) for estimator in self.ensemble]
-        return {c: np.mean([pred.get(c, 0) for pred in y_pred]) for c in set().union(*y_pred)}
+        predictions = [estimator.predict_one(x) for estimator in self.ensemble]
+        return np.mean(predictions)
+

@@ -6,16 +6,25 @@ from sklearn.model_selection import train_test_split
 from pathlib import Path
 from river import tree, metrics, forest, neighbors,ensemble, naive_bayes, stream, drift
 from river.evaluate import progressive_val_score
-from river.stream import iter_sklearn_dataset
 import pickle
 import re
-from river import linear_model,rules, preprocessing
-
-
-
-
+from river import linear_model, rules, preprocessing
+from Oespl import OESPL
 LOGGING_FORMATTER = "%(asctime)s:%(name)s:%(levelname)s: %(message)s"
+def custom_progressive_val_score(dataset, model, metric, print_every=None):
+    for i, (x, y) in enumerate(dataset):
+        x = dict(x) if isinstance(x, pd.Series) else x  # Ensure x is a dict
+        y_pred = model.predict_one(x)
+        if y_pred is not None:
+            old_metric = metric # Convert to float to avoid references
+            metric.update(y_true=y, y_pred=y_pred)
+            #logger.debug(f"Step {i}: y_true={y}, y_pred={y_pred:.4f}, metric before={old_metric.get():.4f}, metric after={metric.get():.4f}")
+        model.learn_one(x, y)
 
+        if print_every and i % print_every == 0:
+            print(f"[{i}] {metric}")
+
+    return metric.get()
 
 def main(dataset_path, output_dir,model_name):
     
@@ -27,6 +36,8 @@ def main(dataset_path, output_dir,model_name):
     
     
     column_names = df.drop('target',axis=1).columns
+    X = df.drop('target',axis=1)
+    y = df['target']
 
 
     logging.info(f"Number of columns: {len(df.columns)}")
@@ -71,22 +82,61 @@ def main(dataset_path, output_dir,model_name):
                 leaf_prediction='adaptive',
                 model_selector_decay=0.9,                
             )
+        ),
+        'oespl': OESPL(
+            base_estimator=tree.HoeffdingTreeRegressor(),
+            ensemble_size=3,
+            lambda_fixed=6.0,
+            seed=42,
+            drift_detector=drift.ADWIN(),
+            patience=1000,
+            awakening=500,
+            reset_model=True
         )
     }
     model = (preprocessing.StandardScaler() | models[model_name])
     metric = metrics.MAE()
 
-
-    streams = stream.iter_pandas(X=df[column_names],y=df['target'])
     logging.info(f'TRAINING MODEL {model_name}')
-    progressive_val_score(dataset=streams, 
-                      model=model, 
-                      metric=metric, 
-                      print_every=1000)
-
-      
-    logging.info(f'{metric}')
     
+    
+    model = (preprocessing.StandardScaler() | OESPL(
+                base_estimator=tree.HoeffdingTreeRegressor(),
+                ensemble_size=3,
+                lambda_fixed=6.0,
+                seed=42,
+                drift_detector=drift.ADWIN(),
+                patience=1000,
+                awakening=500,
+                reset_model=True
+            ))
+    metric = metrics.MAE()
+    # Valutazione con progressive_val_score standard
+    streams1 = stream.iter_pandas(X, y, shuffle=True, seed=42)
+    result1 = progressive_val_score(dataset=streams1, model=model, metric=metric, print_every=1000)
+    print(f'Progressive validation score: {result1}')
+
+    metric = metrics.MAE()
+    model = (preprocessing.StandardScaler() | OESPL(
+                base_estimator=tree.HoeffdingTreeRegressor(),
+                ensemble_size=3,
+                lambda_fixed=6.0,
+                seed=42,
+                drift_detector=drift.ADWIN(),
+                patience=1000,
+                awakening=500,
+                reset_model=True
+            ))
+    # Valutazione con implementazione personalizzata
+    streams2 = stream.iter_pandas(X, y, shuffle=True, seed=42)
+    result2 = custom_progressive_val_score(dataset=streams2, model=model, metric=metric, print_every=1000)
+    print(f'Custom progressive validation score: {result2}')
+
+    # Confronto dei risultati
+    print(f'Differenza tra i risultati: {abs(result1.get() - result2)}')
+
+    logging.info(f'Manual iteration score: {metric}')
+
     file_name = f'{datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}'
     acc = re.findall(r"\d+.\d+", str(metric))[0] 
     out = output_dir.joinpath(f'{acc}_{name}_{model_name}_{file_name}.pkl')

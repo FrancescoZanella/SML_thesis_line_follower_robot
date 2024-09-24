@@ -37,17 +37,23 @@ DEF floor RectangleArena {
   wallHeight 0.05
 }
 DEF my_epuck E-puck {
-  hidden position_0_0 -1.2239605375387233e-08
-  hidden position_0_1 -1.223962508304483e-08
-  hidden rotation_1 0 -1 0 4.2146848510894035e-08
+  hidden position_0_0 -1.8359399930277824e-08
+  hidden position_0_1 -1.835941053358815e-08
+  hidden linearVelocity_0 2.8482962889135285e-07 -2.5019618518605516e-08 -3.5645679001087654e-10
+  hidden angularVelocity_0 1.6680349122066288e-06 1.8989329793081496e-05 -1.2799868600765925e-13
+  hidden rotation_1 0 -0.9999999999999999 0 4.2146848510894035e-08
+  hidden linearVelocity_1 3.7955982960214636e-07 -3.590051343375228e-08 7.3621084658359596e-06
+  hidden angularVelocity_1 1.8585448985874884e-06 1.8972594869002108e-05 -3.0232522350692007e-13
   hidden rotation_2 0 -1 0 4.2146848510894035e-08
-  translation -0.1356050001061731 -0.3155959999906733 -6.39620296132553e-05
-  rotation -5.080268429061179e-06 -0.00011652908726104778 -0.9999999931975811 0.08761697655550742
+  hidden linearVelocity_2 3.8000608651224965e-07 -3.082024632485026e-08 7.362125240328865e-06
+  hidden angularVelocity_2 1.4775251900918418e-06 1.90060643877971e-05 4.6130608711911316e-14
+  translation -0.13560500010650328 -0.3155959999906443 -6.396204111056014e-05
+  rotation -4.775277726565453e-06 -0.00010957143870108278 -0.9999999939856482 0.08761697648655249
   controller "model_controller"
   controllerArgs [
     "production: True"
-    "model: 3.13841_raw_arf_2024-09-12_11-06-59"
-    "plot: True"
+    "model: 17.722481_raw_oespl_2024-09-23_18-36-18"
+    "plot: False"
     "save_sensors: False"
     "save_images: False"
     "verbose: True"
@@ -66,7 +72,7 @@ Robot {
   name "supervisor"
   controller "change_color"
   controllerArgs [
-    "[(500,3000),(3500,4500)]"
+    "[(500,1000)]"
   ]
   supervisor TRUE
 }
@@ -79,7 +85,7 @@ DEF sign Transform {
       appearance Appearance {
         texture ImageTexture {
           url [
-            "../resources/no_drift.png"
+            "C:/Users/franc/Desktop/TESI/SML_thesis_line_follower_robot/e_puck/resources/no_drift.png"
           ]
           repeatS FALSE
           repeatT FALSE

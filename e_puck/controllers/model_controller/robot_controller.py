@@ -11,10 +11,10 @@ from river import metrics
 from matplotlib import pyplot as plt
 import numpy as np
 import pandas as pd
-from src.src.drift_detector import DriftDetector
+from drift_detector import DriftDetector
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-from src.src.Oespl import OESPL
+from Oespl import OESPL
 
 
 

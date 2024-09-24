@@ -1,4 +1,5 @@
 from robot_controller import RobotController
+from robot_controller_oespl import RobotControllerOESPL
 from pathlib import Path
 import sys
 
@@ -16,7 +17,19 @@ def main():
     
     model_path = Path(__file__).parent.parent.parent / 'data' / 'models' / f"{args['model']}.pkl"
     
+    """
     controller = RobotController(
+        production=args['production'] == 'True',
+        model_path=str(model_path),
+        plot=args['plot'] == 'True',
+        save_sensors=args['save_sensors'] == 'True',
+        save_images=args['save_images'] == 'True',
+        verbose=args['verbose'] == 'True',
+        learning=args['learning'] == 'True',
+        enable_recovery=args['enable_recovery'] == 'True'
+    )
+    """
+    controller = RobotControllerOESPL(
         production=args['production'] == 'True',
         model_path=str(model_path),
         plot=args['plot'] == 'True',

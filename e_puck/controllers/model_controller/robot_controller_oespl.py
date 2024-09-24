@@ -80,7 +80,7 @@ class RobotControllerOESPL:
             lambda_fixed=6,
             seed=42,
             drift_detector=DriftDetector(300, 850, 50, 20, 25),
-            patience=25,
+            patience=5,
             awakening=50,
             reset_model=True),metrics.MAE()
 

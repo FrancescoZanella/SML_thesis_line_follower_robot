@@ -41,7 +41,7 @@ class OESPL(base.Regressor):
         self.ensemble = [copy.deepcopy(self.base_estimator) for _ in range(self.ensemble_size)]
         
         for i in range(self.ensemble_size):
-            self.page_hinkley.append(drift.PageHinkley())
+            self.page_hinkley.append(drift.PageHinkley(min_instances=3,threshold=0.5))
             self.growth.append(True)
             self.past_growth.append(False)
             self.awakening_counters.append(0)
@@ -61,7 +61,7 @@ class OESPL(base.Regressor):
             t_s.append(tree_size)
             self.page_hinkley[i].update(tree_size)
             
-            self.page_hinkley[i] = drift.PageHinkley(min_instances=5,delta=0.001)
+            
             d_s.append(self.page_hinkley[i].drift_detected)
             
             if self.n_instances[i] % self.patiences[i] == 0:
@@ -89,7 +89,7 @@ class OESPL(base.Regressor):
             
             if k > 0:
                 self.ensemble[i].learn_one(x, y,w=k)
-
+            print('lambda_val', lambda_val)
             self._drift_detection(x, y, i)
             # Poisson sampling
             k = self.random_state.poisson(lambda_val)
@@ -99,8 +99,8 @@ class OESPL(base.Regressor):
 
             self._drift_detection(x, y, i)
         
-        print(f'{t_s}')
-        print(f'{d_s}')
+        #print(f'{t_s}')
+        #print(f'{d_s}')
         
           
         return self
@@ -114,7 +114,7 @@ class OESPL(base.Regressor):
         if self.drift_detectors[i].drift_detected:
             print(f'drift detected, resetting ensemble {i}')
 
-            self.page_hinkley[i] = drift.PageHinkley()
+            self.page_hinkley[i] = drift.PageHinkley(min_instances=3,threshold=0.5)
             self.n_instances[i] = 0
             self.patiences[i] = self.patience
             self.awakening_counters[i] = 0

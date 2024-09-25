@@ -1,5 +1,7 @@
 tesi/
 call.docx
-e_puck/data/data/
-e_puck/data/images/
-e_puck/plugins/
+e-puck/data/data/
+e-puck/data/images/
+e-puck/data/plots/
+e-puck/plugins/
+*.cpython-312.pyc

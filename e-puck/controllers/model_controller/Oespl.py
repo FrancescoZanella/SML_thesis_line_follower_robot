@@ -64,35 +64,36 @@ class OESPL(base.Regressor):
             if self.n_instances[i] % self.patiences[i] == 0:
                 
                 
-                self.past_growth[i] = self.growth[i]
+                
 
                 recent_drifts = self.page_hinkley[i].drift_history[-20:]
-                
+                self.past_growth[i] = any(self.page_hinkley[i].drift_history[-40:-20])
                 self.growth[i] = any(recent_drifts) or self.page_hinkley[i].drift_detected
                 if i==0:
-                    print(f'growth {self.growth[i]}')              
+                    print(f'growth {self.growth[i]}')
+                    print(f'past_growth {self.past_growth[i]}')           
                 if self.growth[i] == False and self.past_growth[i] == False:
                     if i==0:
                         print(f'awakening')
                     self.awakening_counters[i] = self.awakening
                     self.patiences[i] *= 2
-                else:
-                    if self.growth[i] == True and self.past_growth[i] == False:
-                        if i==0:
-                            print(f'finished awakening')
-                        self.awakening_counters[i] = 0
-                        self.patiences[i] = self.patience
+                elif self.growth[i] == True and self.past_growth[i] == False:
+                    if i==0:
+                        print(f'reset awakening')
+                    self.awakening_counters[i] = 0
+                    self.patiences[i] = self.patience
             
             if self.growth[i] == True or self.awakening_counters[i] > 0:
-                if i==0:
-                    print(f'learning')
+                if i == 0:
+                    print('learning')
                 lambda_val = self.lambda_fixed
                 if self.awakening_counters[i] > 0:
                     self.awakening_counters[i] -= 1
             else:
                 if i==0:
-                    print(f'not learning')
+                    print('no learning')
                 lambda_val = 0.1
+            
             
             k = self.random_state.poisson(lambda_val)
             
@@ -106,20 +107,21 @@ class OESPL(base.Regressor):
             if k > 0:
                 self.ensemble[i].learn_one(x, y,w=k)
 
-            self._drift_detection(x, y, i)
+            reset_metric = self._drift_detection(x, y, i)
         
         
         
           
-        return self
+        return reset_metric
 
     def _drift_detection(self, x, y, i):
 
         
         
-        self.drift_detectors[i].update(x['sensor0'])
+        self.drift_detectors[i].update(x['sensor0'],x['sensor2'])
         
-        if self.drift_detectors[i].drift_detected:
+        reset_metric = self.drift_detectors[i].drift_detected
+        if reset_metric:
             print(f'drift detected, resetting ensemble {i}')
 
             self.page_hinkley[i] = drift.PageHinkley(min_instances=3,threshold=0.5)
@@ -133,6 +135,9 @@ class OESPL(base.Regressor):
             
             if self.reset_model:
                 self.ensemble[i] = copy.deepcopy(self.base_estimator)
+        
+        
+        return reset_metric
 
     def predict_one(self, x):
         

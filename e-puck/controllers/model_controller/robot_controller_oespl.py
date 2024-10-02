@@ -16,7 +16,7 @@ from plotly.subplots import make_subplots
 from Oespl import OESPL
 from river import drift
 from river import tree
-from drift_detector import DriftDetector
+from drift_detector import DualDriftDetector
 
 
 
@@ -79,9 +79,9 @@ class RobotControllerOESPL:
             ensemble_size=10,
             lambda_fixed=6,
             seed=42,
-            drift_detector=DriftDetector(300, 850, 50, 20, 25),
-            patience=5,
-            awakening=50,
+            drift_detector=DualDriftDetector(300, 850, 50, 20, 25),
+            patience=100,
+            awakening=100,
             reset_model=True),metrics.MAE()
 
     def create_directories(self):
@@ -117,7 +117,9 @@ class RobotControllerOESPL:
 
     def run(self):
         i = 0
+        drift_detector = DualDriftDetector(300, 850, 50, 20, 25)
         while self.robot.step(self.TIME_STEP) != -1:
+            
             X, irs_values = self.get_sensors_data()
             
             self.sensors_data.append(irs_values)
@@ -131,7 +133,9 @@ class RobotControllerOESPL:
                 self.metric.update(vel_true, vel)
 
                 if self.learning:
-                    self.pretrained_model.learn_one(X, vel_true)
+                    reset_metric = self.pretrained_model.learn_one(X, vel_true)
+                    if reset_metric:
+                        self.metric = metrics.MAE()
                     
                 
                 if self.verbose:
@@ -142,6 +146,7 @@ class RobotControllerOESPL:
 
             self.update_motor_speeds(vel)
             i += 1
+            
 
         self.post_run_actions()
 
@@ -165,42 +170,33 @@ class RobotControllerOESPL:
 
     def post_run_actions(self):
         if self.plot:
-            self.create_plots()
-            self.plot_combined_anomalies()
+            current_time = datetime.now().strftime("%Y/%m/%d_%H:%M:%S")
+            study_dir = f"study_{current_time}"
+            plots_path = Path(self.model_path).parent.parent.joinpath('plots', study_dir)
+            plots_path.mkdir(parents=True, exist_ok=True)
+            
+            with open('prova.txt', 'w') as f:
+                f.write(str(plots_path))
+
+            self.plot_MAE_drift(plots_path)
         if self.save_sensors and not self.production:
             self.save_sensor_data()
 
-    def create_plots(self):
+    def plot_MAE_drift(self,path):
         plt.figure(figsize=(12, 6))
         plt.plot(self.mae_log, label='MAE', zorder=10)
         plt.title('MAE over time with Drift Detection')
         plt.xlabel('Time steps')
         plt.ylabel('MAE')
         
-        merged = []
-        for interval in sorted(self.drift_detector_left.anomalies + self.drift_detector_right.anomalies):
-            if not merged or merged[-1][1] < interval[0]:
-                merged.append(interval)
-            else:
-                merged[-1] = (merged[-1][0], max(merged[-1][1], interval[1]))
-    
-
-        for start, end in merged:
-            plt.axvspan(start, end, facecolor='red', alpha=0.2, label='Drift Zones')
+        for start, end in self.drift_detector.anomalies:
+            plt.axvspan(start, end, facecolor='red', alpha=0.2, label='Concept')
+            plt.axvline(x=start, color='red', linestyle='--', linewidth=1, label='Concept Drift')
+            plt.axvline(x=end, color='red', linestyle='--', linewidth=1, label='Concept Drift')
         
         handles, labels = plt.gca().get_legend_handles_labels()
         by_label = dict(zip(labels, handles))
         plt.legend(by_label.values(), by_label.keys(), loc='upper left')
-        
-        current_time = datetime.now().strftime("%Y%m%d_%H%M%S")
-
-        if self.learning:
-            name = f'mae_drift_plot_learning_{current_time}.png'
-        else:
-            name = f'mae_drift_plot_no_learning_{current_time}.png'
-        plot_path = str(Path(self.model_path).parent.parent.joinpath('plots', name))
-        plt.savefig(plot_path)
-        plt.close()
 
     def save_sensor_data(self):
         sensors_data_path = Path(self.model_path).parent.parent.joinpath('data', 'sensors_data', 'sensors_data.csv')
@@ -213,49 +209,6 @@ class RobotControllerOESPL:
             for irs, vel in zip(self.sensors_data, self.labels):
                 csv_writer.writerow(irs + [vel])
 
-    def plot_combined_anomalies(self):
+    
 
-        merged = []
-        for interval in sorted(self.drift_detector_left.anomalies + self.drift_detector_right.anomalies):
-            if not merged or merged[-1][1] < interval[0]:
-                merged.append(interval)
-            else:
-                merged[-1] = (merged[-1][0], max(merged[-1][1], interval[1]))
-
-        
-        fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 12))
-        
-        time_steps = list(range(len(self.sensors_data)))
-        left_sensor_data = [x[0] for x in self.sensors_data]
-        right_sensor_data = [x[2] for x in self.sensors_data]
-        
-        ax1.plot(time_steps, left_sensor_data, label='Sensore Sinistro', color='blue')
-        ax1.set_title('Dati del Sensore Sinistro e Drift Rilevati')
-        ax1.set_xlabel('Passi temporali')
-        ax1.set_ylabel('Valore del Sensore')
-        
-        for start, end in merged:
-            ax1.axvspan(start, end, facecolor='red', alpha=0.2, label='Drift Zones')
-        
-        ax1.legend(loc='upper left')
-        
-        ax2.plot(time_steps, right_sensor_data, label='Sensore Destro', color='green')
-        ax2.set_title('Dati del Sensore Destro e Drift Rilevati')
-        ax2.set_xlabel('Passi temporali')
-        ax2.set_ylabel('Valore del Sensore')
-        
-        for start, end in merged:
-            ax2.axvspan(start, end, facecolor='red', alpha=0.2, label='Drift Zones')
-        
-        ax2.legend(loc='upper left')
-
-        plt.tight_layout()
-
-        current_time = datetime.now().strftime("%Y%m%d_%H%M%S")
-        plot_name = f'sensori_e_drift_{current_time}.png'
-        plot_path = str(Path(self.model_path).parent.parent.joinpath('plots', plot_name))
-        
-        plt.savefig(plot_path)
-        
-        plt.close(fig)
 

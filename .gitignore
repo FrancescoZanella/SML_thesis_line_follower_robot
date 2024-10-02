@@ -6,4 +6,5 @@ e-puck/data/plots/
 e-puck/plugins/
 e-puck/worlds/
 **/__pycache__/
-e-puck/controllers/model_controller/__pycache__/robot_controller_oespl.cpython-312.pyc
+*.py[cod]
+

@@ -55,10 +55,10 @@ The robot can operate in two modes:
     - Then go to `Tools -> Preferences` and set python command to:
 
       On Windows:
-        - `…\SML_thesis_line_follower_robot\tesi\Scripts\python.exe`
+        - `…\SML_thesis_line_follower_robot\env_name\Scripts\python.exe`
 
       On MacOs/Linux:
-        - `…/SML_thesis_line_follower_robot/tesi/bin/python`
+        - `…/SML_thesis_line_follower_robot/env_name/bin/python`
 
       **N.B.** *write the full path to python executable inside the venv just created.*
 

@@ -47,8 +47,6 @@ class RobotController:
         left_motor.setVelocity(0.0)
         right_motor.setVelocity(0.0)
 
-        camera = self.robot.getDevice('camera')
-        camera.enable(self.TIME_STEP)
 
         sensors = []
         for i in range(self.NB_GROUND_SENS):

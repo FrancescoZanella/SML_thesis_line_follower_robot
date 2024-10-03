@@ -8,18 +8,18 @@ STATUS_FILE = Path(__file__).parent.parent.parent / 'resources'
 def main():
     robot = Supervisor()
 
-    transform_node = robot.getFromDef('sign')
-    shape_node = transform_node.getField('children').getMFNode(0)
-    appearance_node = shape_node.getField('appearance').getSFNode()
-    texture_node = appearance_node.getField('texture').getSFNode()
-    url_field = texture_node.getField('url')
-
     floor = robot.getFromDef('floor')
     floorAppearance = floor.getField('floorAppearance')
     appearance_node = floorAppearance.getSFNode()
     base_color_field = appearance_node.getField('baseColor')
     
     
+    my_button = robot.getFromDef('my_button')
+    touch_sensor = my_button.getField('children').getMFNode(0)
+    shape_node = touch_sensor.getField('children').getMFNode(0)
+    appearance_node = shape_node.getField('appearance').getSFNode()
+    texture_node = appearance_node.getField('texture').getSFNode()
+    url_field = texture_node.getField('url')
 
     button = robot.getDevice("button")
     button.enable(TIME_STEP)

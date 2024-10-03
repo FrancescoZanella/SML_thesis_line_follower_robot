@@ -49,10 +49,8 @@ DEF my_epuck E-puck {
     "model: 3.13841_raw_arf_2024-09-12_11-06-59"
     "plot: True"
     "save_sensors: False"
-    "save_images: False"
     "verbose: True"
     "learning: True"
-    "enable_recovery: False"
   ]
   window "<none>"
   camera_fieldOfView 0.94

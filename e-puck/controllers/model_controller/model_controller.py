@@ -21,10 +21,8 @@ def main():
         model_path=str(model_path),
         plot=args['plot'] == 'True',
         save_sensors=args['save_sensors'] == 'True',
-        save_images=args['save_images'] == 'True',
         verbose=args['verbose'] == 'True',
         learning=args['learning'] == 'True',
-        enable_recovery=args['enable_recovery'] == 'True'
     )
     print_arguments(args)
     controller.run()

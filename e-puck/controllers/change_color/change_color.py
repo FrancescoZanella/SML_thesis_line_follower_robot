@@ -3,7 +3,6 @@ from pathlib import Path
 import sys
 
 TIME_STEP = 32
-DRIFT_FILE = Path(__file__).parent.parent / 'controller_with_camera' / 'drift_status.txt'
 STATUS_FILE = Path(__file__).parent.parent.parent / 'resources'
 def main():
     robot = Supervisor()
@@ -24,14 +23,14 @@ def main():
     
     i = 0
     base_color_field.setSFColor([255/255,255/255,255/255])
-    url_field.setMFString(0, str(STATUS_FILE / 'no_drift.png'))
+    url_field.setMFString(0, str(STATUS_FILE / 'DAY.png'))
     while robot.step(TIME_STEP) != -1:
         if any(start <= i < end for start, end in drift_intervals) and not drift_active:
             base_color_field.setSFColor([100/255,100/255,100/255])
-            url_field.setMFString(0, str(STATUS_FILE / 'drift.png'))
+            url_field.setMFString(0, str(STATUS_FILE / 'NIGHT.png'))
             drift_active = True
         if not any(start <= i < end for start, end in drift_intervals) and drift_active:
-            url_field.setMFString(0, str(STATUS_FILE / 'no_drift.png'))
+            url_field.setMFString(0, str(STATUS_FILE / 'DAY.png'))
             drift_active = False
             base_color_field.setSFColor([255/255,255/255,255/255])
         i+=1

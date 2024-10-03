@@ -41,12 +41,12 @@ DEF my_epuck E-puck {
   rotation -5.080268429061179e-06 -0.00011652908726104778 -0.9999999931975811 0.08761697655550742
   controller "model_controller"
   controllerArgs [
-    "production: False"
+    "production: True"
     "model: 3.13841_raw_arf_2024-09-12_11-06-59"
     "plot: True"
     "save_sensors: True"
     "verbose: True"
-    "learning: False"
+    "learning: True"
   ]
   window "<none>"
   camera_fieldOfView 0.94
@@ -60,7 +60,7 @@ Robot {
   name "supervisor"
   controller "change_color"
   controllerArgs [
-    "[]"
+    "[(500,3000),(3500,4500)]"
   ]
   supervisor TRUE
 }
@@ -73,7 +73,7 @@ DEF sign Transform {
       appearance Appearance {
         texture ImageTexture {
           url [
-            "../resources/DAY.png"
+            "C:/Users/franc/Desktop/TESI/SML_thesis_line_follower_robot/e-puck/resources/DAY.png"
           ]
           repeatS FALSE
           repeatT FALSE

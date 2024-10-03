@@ -13,8 +13,8 @@ WorldInfo {
   ]
 }
 Viewpoint {
-  orientation 0.3142357210607941 0.24492621781530394 -0.9172061161135447 1.7476700184770613
-  position -0.12150488474380763 2.283887427031057 1.7542601391345123
+  orientation 0.43306911525938474 0.34447644736621214 -0.8329388444648305 1.8629319969144593
+  position -0.1392288047857331 1.8596596684857705 2.8146172956386413
 }
 TexturedBackground {
 }
@@ -37,26 +37,16 @@ DEF floor RectangleArena {
   wallHeight 0.05
 }
 DEF my_epuck E-puck {
-  hidden position_0_0 4.430775952455993
-  hidden position_0_1 4.570928090384557
-  hidden linearVelocity_0 0.020295704830346668 0.01552054500494343 -1.6854319871603142e-08
-  hidden angularVelocity_0 -0.017536532641525555 0.022838946909012704 0.007428282237264938
-  hidden rotation_1 0 1 0 4.430775952455993
-  hidden linearVelocity_1 0.02025848184772461 0.015488166033248351 -6.15782757185103e-07
-  hidden angularVelocity_1 -0.7739850635656405 1.0123686129349192 0.007482752865643469
-  hidden rotation_2 0 1 0 4.570928090384557
-  hidden linearVelocity_2 0.020563764849299067 0.015730887756257476 -4.347710882424198e-07
-  hidden angularVelocity_2 -0.7869770435124427 1.028755968758406 0.007696202681133663
   translation 0.11388514775333718 -0.27125771726742637 -6.404429670553262e-05
   rotation -0.00045622899079447656 0.0014152853996055649 0.9999988944105617 0.6526994825418191
   controller "model_controller"
   controllerArgs [
     "production: True"
     "model: 3.13841_raw_arf_2024-09-12_11-06-59"
-    "plot: True"
+    "plot: False"
     "save_sensors: True"
     "verbose: True"
-    "learning: True"
+    "learning: False"
   ]
   window "<none>"
   camera_fieldOfView 0.94
@@ -85,8 +75,11 @@ DEF my_button Robot {
             textureTransform TextureTransform {
             }
           }
-          geometry Plane {
-            size 0.2 0.2
+          geometry Cylinder {
+            bottom FALSE
+            height 0.05
+            radius 0.09
+            side FALSE
           }
         }
       ]
@@ -97,7 +90,6 @@ DEF my_button Robot {
       }
       physics Physics {
       }
-      linearVelocity 0 0 -5.421594479496051e-07
     }
   ]
   name "click_button"

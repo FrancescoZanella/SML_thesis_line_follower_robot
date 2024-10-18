@@ -42,7 +42,7 @@ DEF my_epuck E-puck {
   controller "model_controller"
   controllerArgs [
     "production: True"
-    "model: 3.13841_raw_arf_2024-09-12_11-06-59"
+    "model: 1.760767_raw_arf_2024-10-04_16-08-56"
     "plot: False"
     "save_sensors: True"
     "verbose: True"

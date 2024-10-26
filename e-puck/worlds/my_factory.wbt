@@ -1,0 +1,1281 @@
+#VRML_SIM R2023b utf8
+
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackground.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/robots/gctronic/e-puck/protos/E-puck.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/robots/gctronic/e-puck/protos/E-puckGroundSensors.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/appearances/protos/Plaster.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/apartment_structure/protos/Wall.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/apartment_structure/protos/Window.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/appearances/protos/GlossyPaint.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/cabinet/protos/CabinetHandle.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/cabinet/protos/Cabinet.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/tables/protos/Table.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/appearances/protos/BrushedAluminium.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/factory/pallet/protos/WoodenPallet.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/appearances/protos/CorrugatedMetal.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/factory/containers/protos/CardboardBox.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/computers/protos/Monitor.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/floors/protos/RectangleArena.proto"
+
+WorldInfo {
+  info [
+    "Copyright (C) 2006 Laboratory of Intelligent Systems (LIS), EPFL"
+    "Thanks to jean-christophe.zufferey@epfl.ch"
+  ]
+}
+Viewpoint {
+  orientation 0.5438497325655568 -0.5611666188006125 -0.6239547213798933 4.285642886317559
+  position 0.2878200277590482 -0.5804949921356992 4.144250360952824
+  follow "e-puck"
+  followType "None"
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+Monitor {
+  translation 0.0080814 -0.280272 0.05
+  rotation 0 0 1 1.570795613280012
+  scale 0.2
+}
+Monitor {
+  translation -0.125347 -0.283847 0.05
+  rotation 0 0 1 1.570795613280012
+  name "monitor(1)"
+  scale 0.2
+}
+DEF my_epuck E-puck {
+  hidden translation_1 0 0.025999999999999992 0.02
+  hidden rotation_1 0 0.9999999999999999 0 1.2904032619863
+  hidden translation_2 0 -0.025999999999999877 0.02
+  hidden rotation_2 0 1 0 4.135020731527207
+  translation 0.20728284314168177 0.027073242950902476 -6.408034531915976e-05
+  rotation 0.00023142038641361628 0.00021035148093747038 -0.9999999510984285 1.6386817098409878
+  controller "model_controller"
+  controllerArgs [
+    "production: True"
+    "model: 1.760767_raw_arf_2024-10-04_16-08-56"
+    "plot: True"
+    "save_sensors: False"
+    "verbose: True"
+    "learning: True"
+  ]
+  window "<none>"
+  camera_fieldOfView 0.94
+  camera_rotation 0 1 0 0.5235996938995747
+  groundSensorsSlot [
+    E-puckGroundSensors {
+    }
+  ]
+}
+DEF my_button Robot {
+  translation 0.22931 -1.06516 0.1
+  children [
+    TouchSensor {
+      translation -0.2 0.4 -0.09003388189937105
+      children [
+        Shape {
+          appearance Appearance {
+            texture ImageTexture {
+              url [
+                "C:/Users/franc/Desktop/TESI/SML_thesis_line_follower_robot/e-puck/resources/DAY.png"
+              ]
+              repeatS FALSE
+              repeatT FALSE
+            }
+            textureTransform TextureTransform {
+            }
+          }
+          geometry Cylinder {
+            bottom FALSE
+            height 0.05
+            radius 0.09
+            side FALSE
+          }
+        }
+      ]
+      name "button"
+      boundingObject Cylinder {
+        height 0.025
+        radius 0.05
+      }
+      physics Physics {
+      }
+    }
+  ]
+  name "click_button"
+  controller "change_color"
+  supervisor TRUE
+}
+Window {
+  translation 0.133085 0.472609 1.77637e-15
+  rotation 0 0 1 -1.5707996938995747
+  size 0.009 0.2 0.21
+  windowThickness 0.009
+  bottomWallHeight 0.05
+  windowHeight 0.09
+  frameSize 0.001 0.009 1e-05
+  windowSillSize 0.1 0
+  wallAppearance Plaster {
+    textureTransform TextureTransform {
+      scale 0.8 0.8
+    }
+  }
+  frameAppearance GlossyPaint {
+    baseColor 0.58 0.52 0.473
+  }
+}
+Window {
+  translation -0.456245 0.0314729 1.33227e-15
+  name "window(2)"
+  size 0.009 0.2 0.21
+  windowThickness 0.009
+  bottomWallHeight 0.05
+  windowHeight 0.09
+  frameSize 0.001 0.009 1e-05
+  windowSillSize 0.1 0
+  wallAppearance Plaster {
+    textureTransform TextureTransform {
+      scale 0.8 0.8
+    }
+  }
+  frameAppearance GlossyPaint {
+    baseColor 0.58 0.52 0.473
+  }
+}
+Window {
+  translation 0.454107 -0.173376 8.88182e-16
+  name "window(1)"
+  size 0.009 0.2 0.21
+  windowThickness 0.009
+  bottomWallHeight 0.05
+  windowHeight 0.09
+  frameSize 0.001 0.009 1e-05
+  windowSillSize 0.1 0
+  wallAppearance Plaster {
+    textureTransform TextureTransform {
+      scale 0.8 0.8
+    }
+  }
+  frameAppearance GlossyPaint {
+    baseColor 0.58 0.52 0.473
+  }
+}
+Window {
+  translation 0.00216767 -0.465607 3.4417e-15
+  rotation 0 0 1 1.5707996938995747
+  name "window(3)"
+  size 0.01 0.9 0.21
+  glassTransparency 0.9
+  windowThickness 0.01
+  bottomWallHeight 0
+  windowHeight 0.2
+  frameSize 0.001 0.009 1e-05
+  windowSillSize 0 0
+  wallAppearance Plaster {
+    textureTransform TextureTransform {
+      scale 0.8 0.8
+    }
+  }
+  frameAppearance GlossyPaint {
+    baseColor 0.58 0.52 0.473
+  }
+}
+Wall {
+  translation 0.455146 0.206829 0
+  name "wall(16)"
+  size 0.009 0.2 0.21
+  appearance CorrugatedMetal {
+    colorOverride 0.372 0.72 0.295
+    textureTransform TextureTransform {
+      scale 0.76 0.94
+    }
+  }
+}
+Wall {
+  translation -0.453582 0.230312 2.88658e-15
+  name "wall(5)"
+  size 0.009 0.2 0.21
+  appearance CorrugatedMetal {
+    colorOverride 0.372 0.72 0.295
+    textureTransform TextureTransform {
+      scale 0.76 0.94
+    }
+  }
+}
+Cabinet {
+  translation -0.298562 0.00662775 2.33147e-15
+  name "cabinet(3)"
+  depth 0.02
+  innerThickness 0.006
+  outerThickness 0.005
+  rowsHeights [
+    0.03, 0.03, 0.03, 0.03, 0.02
+  ]
+  columnsWidths [
+    0.03, 0.02, 0.02
+  ]
+  layout []
+  handle CabinetHandle {
+    handleLength 0.08
+    handleRadius 0.001
+    handleColor 0 0 0
+    mass 0
+  }
+  primaryAppearance GlossyPaint {
+    baseColor 0.6 0.607843 0.588235
+  }
+  secondaryAppearance GlossyPaint {
+    baseColor 0.729 0.741 0.713
+  }
+}
+Cabinet {
+  translation -0.0212031 0.172908 2.55351e-15
+  name "cabinet(2)"
+  depth 0.02
+  innerThickness 0.006
+  outerThickness 0.005
+  rowsHeights [
+    0.03, 0.03, 0.03, 0.03, 0.02
+  ]
+  columnsWidths [
+    0.03, 0.02, 0.02
+  ]
+  layout []
+  handle CabinetHandle {
+    handleLength 0.08
+    handleRadius 0.001
+    handleColor 0 0 0
+    mass 0
+  }
+  primaryAppearance GlossyPaint {
+    baseColor 0.6 0.607843 0.588235
+  }
+  secondaryAppearance GlossyPaint {
+    baseColor 0.729 0.741 0.713
+  }
+}
+Cabinet {
+  translation -0.0222663 0.253356 2.55351e-15
+  name "cabinet(20)"
+  depth 0.02
+  innerThickness 0.006
+  outerThickness 0.005
+  rowsHeights [
+    0.03, 0.03, 0.03, 0.03, 0.02
+  ]
+  columnsWidths [
+    0.03, 0.02, 0.02
+  ]
+  layout []
+  handle CabinetHandle {
+    handleLength 0.08
+    handleRadius 0.001
+    handleColor 0 0 0
+    mass 0
+  }
+  primaryAppearance GlossyPaint {
+    baseColor 0.6 0.607843 0.588235
+  }
+  secondaryAppearance GlossyPaint {
+    baseColor 0.729 0.741 0.713
+  }
+}
+Cabinet {
+  translation -0.0222663 0.253356 2.55351e-15
+  name "cabinet(24)"
+  depth 0.02
+  innerThickness 0.006
+  outerThickness 0.005
+  rowsHeights [
+    0.03, 0.03, 0.03, 0.03, 0.02
+  ]
+  columnsWidths [
+    0.03, 0.02, 0.02
+  ]
+  layout []
+  handle CabinetHandle {
+    handleLength 0.08
+    handleRadius 0.001
+    handleColor 0 0 0
+    mass 0
+  }
+  primaryAppearance GlossyPaint {
+    baseColor 0.6 0.607843 0.588235
+  }
+  secondaryAppearance GlossyPaint {
+    baseColor 0.729 0.741 0.713
+  }
+}
+Cabinet {
+  translation -0.0210929 -0.0652662 2.55351e-15
+  name "cabinet(21)"
+  depth 0.02
+  innerThickness 0.006
+  outerThickness 0.005
+  rowsHeights [
+    0.03, 0.03, 0.03, 0.03, 0.02
+  ]
+  columnsWidths [
+    0.03, 0.02, 0.02
+  ]
+  layout []
+  handle CabinetHandle {
+    handleLength 0.08
+    handleRadius 0.001
+    handleColor 0 0 0
+    mass 0
+  }
+  primaryAppearance GlossyPaint {
+    baseColor 0.6 0.607843 0.588235
+  }
+  secondaryAppearance GlossyPaint {
+    baseColor 0.729 0.741 0.713
+  }
+}
+Cabinet {
+  translation -0.0214745 0.0938808 2.55351e-15
+  name "cabinet(22)"
+  depth 0.02
+  innerThickness 0.006
+  outerThickness 0.005
+  rowsHeights [
+    0.03, 0.03, 0.03, 0.03, 0.02
+  ]
+  columnsWidths [
+    0.03, 0.02, 0.02
+  ]
+  layout []
+  handle CabinetHandle {
+    handleLength 0.08
+    handleRadius 0.001
+    handleColor 0 0 0
+    mass 0
+  }
+  primaryAppearance GlossyPaint {
+    baseColor 0.6 0.607843 0.588235
+  }
+  secondaryAppearance GlossyPaint {
+    baseColor 0.729 0.741 0.713
+  }
+}
+Cabinet {
+  translation -0.0222663 0.253356 2.55351e-15
+  name "cabinet(16)"
+  depth 0.02
+  innerThickness 0.006
+  outerThickness 0.005
+  rowsHeights [
+    0.03, 0.03, 0.03, 0.03, 0.02
+  ]
+  columnsWidths [
+    0.03, 0.02, 0.02
+  ]
+  layout []
+  handle CabinetHandle {
+    handleLength 0.08
+    handleRadius 0.001
+    handleColor 0 0 0
+    mass 0
+  }
+  primaryAppearance GlossyPaint {
+    baseColor 0.6 0.607843 0.588235
+  }
+  secondaryAppearance GlossyPaint {
+    baseColor 0.729 0.741 0.713
+  }
+}
+Cabinet {
+  translation 0.289857 0.184378 2.9976e-15
+  name "cabinet(17)"
+  depth 0.02
+  innerThickness 0.006
+  outerThickness 0.005
+  rowsHeights [
+    0.03, 0.03, 0.03, 0.03, 0.02
+  ]
+  columnsWidths [
+    0.03, 0.02, 0.02
+  ]
+  layout []
+  handle CabinetHandle {
+    handleLength 0.08
+    handleRadius 0.001
+    handleColor 0 0 0
+    mass 0
+  }
+  primaryAppearance GlossyPaint {
+    baseColor 0.6 0.607843 0.588235
+  }
+  secondaryAppearance GlossyPaint {
+    baseColor 0.729 0.741 0.713
+  }
+}
+Cabinet {
+  translation 0.290027 0.106635 5.88418e-15
+  name "cabinet(29)"
+  depth 0.02
+  innerThickness 0.006
+  outerThickness 0.005
+  rowsHeights [
+    0.03, 0.03, 0.03, 0.03, 0.02
+  ]
+  columnsWidths [
+    0.03, 0.02, 0.02
+  ]
+  layout []
+  handle CabinetHandle {
+    handleLength 0.08
+    handleRadius 0.001
+    handleColor 0 0 0
+    mass 0
+  }
+  primaryAppearance GlossyPaint {
+    baseColor 0.6 0.607843 0.588235
+  }
+  secondaryAppearance GlossyPaint {
+    baseColor 0.729 0.741 0.713
+  }
+}
+Cabinet {
+  translation 0.290202 0.0291769 4.32987e-15
+  name "cabinet(30)"
+  depth 0.02
+  innerThickness 0.006
+  outerThickness 0.005
+  rowsHeights [
+    0.03, 0.03, 0.03, 0.03, 0.02
+  ]
+  columnsWidths [
+    0.03, 0.02, 0.02
+  ]
+  layout []
+  handle CabinetHandle {
+    handleLength 0.08
+    handleRadius 0.001
+    handleColor 0 0 0
+    mass 0
+  }
+  primaryAppearance GlossyPaint {
+    baseColor 0.6 0.607843 0.588235
+  }
+  secondaryAppearance GlossyPaint {
+    baseColor 0.729 0.741 0.713
+  }
+}
+Cabinet {
+  translation 0.290498 -0.0502843 3.66373e-15
+  name "cabinet(31)"
+  depth 0.02
+  innerThickness 0.006
+  outerThickness 0.005
+  rowsHeights [
+    0.03, 0.03, 0.03, 0.03, 0.02
+  ]
+  columnsWidths [
+    0.03, 0.02, 0.02
+  ]
+  layout []
+  handle CabinetHandle {
+    handleLength 0.08
+    handleRadius 0.001
+    handleColor 0 0 0
+    mass 0
+  }
+  primaryAppearance GlossyPaint {
+    baseColor 0.6 0.607843 0.588235
+  }
+  secondaryAppearance GlossyPaint {
+    baseColor 0.729 0.741 0.713
+  }
+}
+Cabinet {
+  translation 0.29176 0.263477 2.55351e-15
+  name "cabinet(32)"
+  depth 0.02
+  innerThickness 0.006
+  outerThickness 0.005
+  rowsHeights [
+    0.03, 0.03, 0.03, 0.03, 0.02
+  ]
+  columnsWidths [
+    0.03, 0.02, 0.02
+  ]
+  layout []
+  handle CabinetHandle {
+    handleLength 0.08
+    handleRadius 0.001
+    handleColor 0 0 0
+    mass 0
+  }
+  primaryAppearance GlossyPaint {
+    baseColor 0.6 0.607843 0.588235
+  }
+  secondaryAppearance GlossyPaint {
+    baseColor 0.729 0.741 0.713
+  }
+}
+Cabinet {
+  translation -0.0227391 0.014252 2.55351e-15
+  name "cabinet(18)"
+  depth 0.02
+  innerThickness 0.006
+  outerThickness 0.005
+  rowsHeights [
+    0.03, 0.03, 0.03, 0.03, 0.02
+  ]
+  columnsWidths [
+    0.03, 0.02, 0.02
+  ]
+  layout []
+  handle CabinetHandle {
+    handleLength 0.08
+    handleRadius 0.001
+    handleColor 0 0 0
+    mass 0
+  }
+  primaryAppearance GlossyPaint {
+    baseColor 0.6 0.607843 0.588235
+  }
+  secondaryAppearance GlossyPaint {
+    baseColor 0.729 0.741 0.713
+  }
+}
+Cabinet {
+  translation -0.295572 0.243819 2.55351e-15
+  name "cabinet(12)"
+  depth 0.02
+  innerThickness 0.006
+  outerThickness 0.005
+  rowsHeights [
+    0.03, 0.03, 0.03, 0.03, 0.02
+  ]
+  columnsWidths [
+    0.03, 0.02, 0.02
+  ]
+  layout []
+  handle CabinetHandle {
+    handleLength 0.08
+    handleRadius 0.001
+    handleColor 0 0 0
+    mass 0
+  }
+  primaryAppearance GlossyPaint {
+    baseColor 0.6 0.607843 0.588235
+  }
+  secondaryAppearance GlossyPaint {
+    baseColor 0.729 0.741 0.713
+  }
+}
+Cabinet {
+  translation -0.296253 0.166532 2.55351e-15
+  name "cabinet(10)"
+  depth 0.02
+  innerThickness 0.006
+  outerThickness 0.005
+  rowsHeights [
+    0.03, 0.03, 0.03, 0.03, 0.02
+  ]
+  columnsWidths [
+    0.03, 0.02, 0.02
+  ]
+  layout []
+  handle CabinetHandle {
+    handleLength 0.08
+    handleRadius 0.001
+    handleColor 0 0 0
+    mass 0
+  }
+  primaryAppearance GlossyPaint {
+    baseColor 0.6 0.607843 0.588235
+  }
+  secondaryAppearance GlossyPaint {
+    baseColor 0.729 0.741 0.713
+  }
+}
+Cabinet {
+  translation -0.299787 -0.0721356 -5.55114e-16
+  name "cabinet(4)"
+  depth 0.02
+  innerThickness 0.006
+  outerThickness 0.005
+  rowsHeights [
+    0.03, 0.03, 0.03, 0.03, 0.02
+  ]
+  columnsWidths [
+    0.03, 0.02, 0.02
+  ]
+  layout []
+  handle CabinetHandle {
+    handleLength 0.08
+    handleRadius 0.001
+    handleColor 0 0 0
+    mass 0
+  }
+  primaryAppearance GlossyPaint {
+    baseColor 0.6 0.607843 0.588235
+  }
+  secondaryAppearance GlossyPaint {
+    baseColor 0.729 0.741 0.713
+  }
+}
+Cabinet {
+  translation -0.294767 0.244553 2.33147e-15
+  rotation 0 0 1 -3.141592653589793
+  name "cabinet(5)"
+  depth 0.02
+  innerThickness 0.006
+  outerThickness 0.005
+  rowsHeights [
+    0.03, 0.03, 0.03, 0.03, 0.02
+  ]
+  columnsWidths [
+    0.03, 0.02, 0.02
+  ]
+  layout []
+  handle CabinetHandle {
+    handleLength 0.08
+    handleRadius 0.001
+    handleColor 0 0 0
+    mass 0
+  }
+  primaryAppearance GlossyPaint {
+    baseColor 0.6 0.607843 0.588235
+  }
+  secondaryAppearance GlossyPaint {
+    baseColor 0.729 0.741 0.713
+  }
+}
+Cabinet {
+  translation -0.0211185 0.173528 5.55113e-16
+  rotation 0 0 1 -3.141592653589793
+  name "cabinet(11)"
+  depth 0.02
+  innerThickness 0.006
+  outerThickness 0.005
+  rowsHeights [
+    0.03, 0.03, 0.03, 0.03, 0.02
+  ]
+  columnsWidths [
+    0.03, 0.02, 0.02
+  ]
+  layout []
+  handle CabinetHandle {
+    handleLength 0.08
+    handleRadius 0.001
+    handleColor 0 0 0
+    mass 0
+  }
+  primaryAppearance GlossyPaint {
+    baseColor 0.6 0.607843 0.588235
+  }
+  secondaryAppearance GlossyPaint {
+    baseColor 0.729 0.741 0.713
+  }
+}
+Cabinet {
+  translation -0.0216082 0.0925307 1.88738e-15
+  rotation 0 0 1 -3.141592653589793
+  name "cabinet(13)"
+  depth 0.02
+  innerThickness 0.006
+  outerThickness 0.005
+  rowsHeights [
+    0.03, 0.03, 0.03, 0.03, 0.02
+  ]
+  columnsWidths [
+    0.03, 0.02, 0.02
+  ]
+  layout []
+  handle CabinetHandle {
+    handleLength 0.08
+    handleRadius 0.001
+    handleColor 0 0 0
+    mass 0
+  }
+  primaryAppearance GlossyPaint {
+    baseColor 0.6 0.607843 0.588235
+  }
+  secondaryAppearance GlossyPaint {
+    baseColor 0.729 0.741 0.713
+  }
+}
+Cabinet {
+  translation 0.289982 -0.0517225 1.11023e-16
+  rotation 0 0 -1 3.141592653589793
+  name "cabinet(14)"
+  depth 0.02
+  innerThickness 0.006
+  outerThickness 0.005
+  rowsHeights [
+    0.03, 0.03, 0.03, 0.03, 0.02
+  ]
+  columnsWidths [
+    0.03, 0.02, 0.02
+  ]
+  layout []
+  handle CabinetHandle {
+    handleLength 0.08
+    handleRadius 0.001
+    handleColor 0 0 0
+    mass 0
+  }
+  primaryAppearance GlossyPaint {
+    baseColor 0.6 0.607843 0.588235
+  }
+  secondaryAppearance GlossyPaint {
+    baseColor 0.729 0.741 0.713
+  }
+}
+Cabinet {
+  translation 0.289428 0.105395 9.99202e-16
+  rotation 0 0 -1 3.141592653589793
+  name "cabinet(26)"
+  depth 0.02
+  innerThickness 0.006
+  outerThickness 0.005
+  rowsHeights [
+    0.03, 0.03, 0.03, 0.03, 0.02
+  ]
+  columnsWidths [
+    0.03, 0.02, 0.02
+  ]
+  layout []
+  handle CabinetHandle {
+    handleLength 0.08
+    handleRadius 0.001
+    handleColor 0 0 0
+    mass 0
+  }
+  primaryAppearance GlossyPaint {
+    baseColor 0.6 0.607843 0.588235
+  }
+  secondaryAppearance GlossyPaint {
+    baseColor 0.729 0.741 0.713
+  }
+}
+Cabinet {
+  translation 0.2897 0.0268209 1.25455e-14
+  rotation 0 0 -1 3.141592653589793
+  name "cabinet(27)"
+  depth 0.02
+  innerThickness 0.006
+  outerThickness 0.005
+  rowsHeights [
+    0.03, 0.03, 0.03, 0.03, 0.02
+  ]
+  columnsWidths [
+    0.03, 0.02, 0.02
+  ]
+  layout []
+  handle CabinetHandle {
+    handleLength 0.08
+    handleRadius 0.001
+    handleColor 0 0 0
+    mass 0
+  }
+  primaryAppearance GlossyPaint {
+    baseColor 0.6 0.607843 0.588235
+  }
+  secondaryAppearance GlossyPaint {
+    baseColor 0.729 0.741 0.713
+  }
+}
+Cabinet {
+  translation 0.290148 0.185341 1.88738e-15
+  rotation 0 0 -1 3.141592653589793
+  name "cabinet(28)"
+  depth 0.02
+  innerThickness 0.006
+  outerThickness 0.005
+  rowsHeights [
+    0.03, 0.03, 0.03, 0.03, 0.02
+  ]
+  columnsWidths [
+    0.03, 0.02, 0.02
+  ]
+  layout []
+  handle CabinetHandle {
+    handleLength 0.08
+    handleRadius 0.001
+    handleColor 0 0 0
+    mass 0
+  }
+  primaryAppearance GlossyPaint {
+    baseColor 0.6 0.607843 0.588235
+  }
+  secondaryAppearance GlossyPaint {
+    baseColor 0.729 0.741 0.713
+  }
+}
+Cabinet {
+  translation 0.291122 0.264688 1.88738e-15
+  rotation 0 0 -1 3.141592653589793
+  name "cabinet(25)"
+  depth 0.02
+  innerThickness 0.006
+  outerThickness 0.005
+  rowsHeights [
+    0.03, 0.03, 0.03, 0.03, 0.02
+  ]
+  columnsWidths [
+    0.03, 0.02, 0.02
+  ]
+  layout []
+  handle CabinetHandle {
+    handleLength 0.08
+    handleRadius 0.001
+    handleColor 0 0 0
+    mass 0
+  }
+  primaryAppearance GlossyPaint {
+    baseColor 0.6 0.607843 0.588235
+  }
+  secondaryAppearance GlossyPaint {
+    baseColor 0.729 0.741 0.713
+  }
+}
+Cabinet {
+  translation -0.0223326 0.251738 1.88738e-15
+  rotation 0 0 -1 3.141592653589793
+  name "cabinet(23)"
+  depth 0.02
+  innerThickness 0.006
+  outerThickness 0.005
+  rowsHeights [
+    0.03, 0.03, 0.03, 0.03, 0.02
+  ]
+  columnsWidths [
+    0.03, 0.02, 0.02
+  ]
+  layout []
+  handle CabinetHandle {
+    handleLength 0.08
+    handleRadius 0.001
+    handleColor 0 0 0
+    mass 0
+  }
+  primaryAppearance GlossyPaint {
+    baseColor 0.6 0.607843 0.588235
+  }
+  secondaryAppearance GlossyPaint {
+    baseColor 0.729 0.741 0.713
+  }
+}
+Cabinet {
+  translation -0.0204015 -0.067201 1.88738e-15
+  rotation 0 0 -1 3.141592653589793
+  name "cabinet(19)"
+  depth 0.02
+  innerThickness 0.006
+  outerThickness 0.005
+  rowsHeights [
+    0.03, 0.03, 0.03, 0.03, 0.02
+  ]
+  columnsWidths [
+    0.03, 0.02, 0.02
+  ]
+  layout []
+  handle CabinetHandle {
+    handleLength 0.08
+    handleRadius 0.001
+    handleColor 0 0 0
+    mass 0
+  }
+  primaryAppearance GlossyPaint {
+    baseColor 0.6 0.607843 0.588235
+  }
+  secondaryAppearance GlossyPaint {
+    baseColor 0.729 0.741 0.713
+  }
+}
+Cabinet {
+  translation -0.0210077 0.0129175 -1.9873e-14
+  rotation 0 0 1 -3.141592653589793
+  name "cabinet(15)"
+  depth 0.02
+  innerThickness 0.006
+  outerThickness 0.005
+  rowsHeights [
+    0.03, 0.03, 0.03, 0.03, 0.02
+  ]
+  columnsWidths [
+    0.03, 0.02, 0.02
+  ]
+  layout []
+  handle CabinetHandle {
+    handleLength 0.08
+    handleRadius 0.001
+    handleColor 0 0 0
+    mass 0
+  }
+  primaryAppearance GlossyPaint {
+    baseColor 0.6 0.607843 0.588235
+  }
+  secondaryAppearance GlossyPaint {
+    baseColor 0.729 0.741 0.713
+  }
+}
+Cabinet {
+  translation -0.296258 0.167349 2.33147e-15
+  rotation 0 0 1 -3.141592653589793
+  name "cabinet(9)"
+  depth 0.02
+  innerThickness 0.006
+  outerThickness 0.005
+  rowsHeights [
+    0.03, 0.03, 0.03, 0.03, 0.02
+  ]
+  columnsWidths [
+    0.03, 0.02, 0.02
+  ]
+  layout []
+  handle CabinetHandle {
+    handleLength 0.08
+    handleRadius 0.001
+    handleColor 0 0 0
+    mass 0
+  }
+  primaryAppearance GlossyPaint {
+    baseColor 0.6 0.607843 0.588235
+  }
+  secondaryAppearance GlossyPaint {
+    baseColor 0.729 0.741 0.713
+  }
+}
+Cabinet {
+  translation -0.29706 0.0873483 2.33147e-15
+  rotation 0 0 1 -3.141592653589793
+  name "cabinet(6)"
+  depth 0.02
+  innerThickness 0.006
+  outerThickness 0.005
+  rowsHeights [
+    0.03, 0.03, 0.03, 0.03, 0.02
+  ]
+  columnsWidths [
+    0.03, 0.02, 0.02
+  ]
+  layout []
+  handle CabinetHandle {
+    handleLength 0.08
+    handleRadius 0.001
+    handleColor 0 0 0
+    mass 0
+  }
+  primaryAppearance GlossyPaint {
+    baseColor 0.6 0.607843 0.588235
+  }
+  secondaryAppearance GlossyPaint {
+    baseColor 0.729 0.741 0.713
+  }
+}
+Cabinet {
+  translation -0.298226 0.00664513 1.29896e-14
+  rotation 0 0 1 -3.141592653589793
+  name "cabinet(7)"
+  depth 0.02
+  innerThickness 0.006
+  outerThickness 0.005
+  rowsHeights [
+    0.03, 0.03, 0.03, 0.03, 0.02
+  ]
+  columnsWidths [
+    0.03, 0.02, 0.02
+  ]
+  layout []
+  handle CabinetHandle {
+    handleLength 0.08
+    handleRadius 0.001
+    handleColor 0 0 0
+    mass 0
+  }
+  primaryAppearance GlossyPaint {
+    baseColor 0.6 0.607843 0.588235
+  }
+  secondaryAppearance GlossyPaint {
+    baseColor 0.729 0.741 0.713
+  }
+}
+Cabinet {
+  translation -0.297863 -0.0731856 8.4377e-15
+  rotation 0 0 -1 3.141592653589793
+  name "cabinet(8)"
+  depth 0.02
+  innerThickness 0.006
+  outerThickness 0.005
+  rowsHeights [
+    0.03, 0.03, 0.03, 0.03, 0.02
+  ]
+  columnsWidths [
+    0.03, 0.02, 0.02
+  ]
+  layout []
+  handle CabinetHandle {
+    handleLength 0.08
+    handleRadius 0.001
+    handleColor 0 0 0
+    mass 0
+  }
+  primaryAppearance GlossyPaint {
+    baseColor 0.6 0.607843 0.588235
+  }
+  secondaryAppearance GlossyPaint {
+    baseColor 0.729 0.741 0.713
+  }
+}
+Cabinet {
+  translation -0.298122 0.0858698 2.33147e-15
+  name "cabinet(1)"
+  depth 0.02
+  innerThickness 0.006
+  outerThickness 0.005
+  rowsHeights [
+    0.03, 0.03, 0.03, 0.03, 0.02
+  ]
+  columnsWidths [
+    0.03, 0.02, 0.02
+  ]
+  layout []
+  handle CabinetHandle {
+    handleLength 0.08
+    handleRadius 0.001
+    handleColor 0 0 0
+    mass 0
+  }
+  primaryAppearance GlossyPaint {
+    baseColor 0.6 0.607843 0.588235
+  }
+  secondaryAppearance GlossyPaint {
+    baseColor 0.729 0.741 0.713
+  }
+}
+CardboardBox {
+  translation -0.00790639 0.140479 0.16
+  size 0.05 0.05 0.03
+}
+CardboardBox {
+  translation 0.285472 0.164678 0.16
+  name "cardboard box(10)"
+  size 0.05 0.05 0.03
+}
+CardboardBox {
+  translation -0.034281 0.0603989 0.16
+  name "cardboard box(16)"
+  size 0.05 0.05 0.03
+}
+CardboardBox {
+  translation -0.0219851 -0.0322312 0.16
+  name "cardboard box(17)"
+  size 0.05 0.05 0.03
+}
+CardboardBox {
+  translation 0.290111 0.264727 0.16
+  name "cardboard box(18)"
+  size 0.05 0.05 0.03
+}
+CardboardBox {
+  translation 0.293736 -0.0117399 0.16
+  name "cardboard box(19)"
+  size 0.05 0.05 0.03
+}
+CardboardBox {
+  translation 0.293892 0.21416 0.16
+  name "cardboard box(20)"
+  size 0.05 0.05 0.03
+}
+CardboardBox {
+  translation -0.0310522 0.198327 0.16
+  name "cardboard box(21)"
+  size 0.05 0.05 0.03
+}
+CardboardBox {
+  translation 0.292337 0.0403409 0.16
+  name "cardboard box(22)"
+  size 0.05 0.05 0.03
+}
+CardboardBox {
+  translation -0.295569 0.149362 0.16
+  name "cardboard box(11)"
+  size 0.05 0.05 0.03
+}
+CardboardBox {
+  translation -0.298807 -0.0401836 0.16
+  name "cardboard box(12)"
+  size 0.05 0.05 0.03
+}
+CardboardBox {
+  translation -0.281946 -0.0880485 0.16
+  name "cardboard box(13)"
+  size 0.05 0.05 0.03
+}
+CardboardBox {
+  translation -0.299073 0.00810233 0.16
+  name "cardboard box(14)"
+  size 0.05 0.05 0.03
+}
+CardboardBox {
+  translation -0.296963 0.200124 0.16
+  name "cardboard box(15)"
+  size 0.05 0.05 0.03
+}
+CardboardBox {
+  translation -0.207162 -0.291391 0.065
+  name "cardboard box(3)"
+  size 0.05 0.05 0.03
+}
+CardboardBox {
+  translation 0.154828 -0.273949 0.065
+  name "cardboard box(4)"
+  size 0.05 0.05 0.03
+}
+CardboardBox {
+  translation 0.0948911 -0.283758 0.065
+  name "cardboard box(5)"
+  size 0.05 0.05 0.03
+}
+CardboardBox {
+  translation 0.234803 -0.277486 0.065
+  name "cardboard box(6)"
+  size 0.05 0.05 0.03
+}
+CardboardBox {
+  translation 0.119844 -0.294084 0.094
+  name "cardboard box(9)"
+  size 0.05 0.05 0.03
+}
+CardboardBox {
+  translation -0.254819 -0.288493 0.065
+  name "cardboard box(7)"
+  size 0.05 0.05 0.03
+}
+CardboardBox {
+  translation -0.235232 -0.295127 0.094
+  name "cardboard box(8)"
+  size 0.05 0.05 0.03
+}
+Table {
+  translation -0.171411 -0.280281 -1.22125e-15
+  rotation 0 0 1 -1.5707996938995747
+  size 0.1 0.3 0.05
+  feetSize 0.008 0.008
+  frameThickness 0.006
+  trayAppearance PBRAppearance {
+    baseColor 0.926 0.912 0.698
+    roughness 0.8
+    metalness 0
+  }
+  legAppearance BrushedAluminium {
+    colorOverride 0.333 0.341 0.325
+  }
+}
+Table {
+  translation 0.127508 -0.280013 -1.44329e-15
+  rotation 0 0 1 -1.5707996938995747
+  name "table(1)"
+  size 0.1 0.3 0.05
+  feetSize 0.008 0.008
+  frameThickness 0.006
+  trayAppearance PBRAppearance {
+    baseColor 0.926 0.912 0.698
+    roughness 0.8
+    metalness 0
+  }
+  legAppearance BrushedAluminium {
+    colorOverride 0.333 0.341 0.325
+  }
+}
+WoodenPallet {
+  translation -0.0198882 -0.120489 0.02
+  rotation 1 0 0 0.7854003061004253
+  name "wooden pallet(1)"
+  size 0.05 0.04 0.011
+}
+Wall {
+  translation -0.456764 -0.273949 -1.19905e-14
+  size 0.009 0.41 0.21
+  appearance Plaster {
+    textureTransform TextureTransform {
+      scale 3.7 2.4
+    }
+  }
+}
+Wall {
+  translation 0.454245 -0.363137 1.33227e-14
+  name "wall(1)"
+  size 0.009 0.18 0.21
+  appearance Plaster {
+    textureTransform TextureTransform {
+      scale 3.7 2.4
+    }
+  }
+}
+Wall {
+  translation 0.45483 0.0172833 1.33227e-14
+  name "wall(7)"
+  size 0.009 0.18 0.21
+  appearance Plaster {
+    textureTransform TextureTransform {
+      scale 3.7 2.4
+    }
+  }
+}
+Wall {
+  translation -0.214782 0.469164 -1.26565e-14
+  rotation 0 0 1 -1.5707996938995747
+  name "wall(4)"
+  size 0.009 0.5 0.21
+  appearance Plaster {
+    textureTransform TextureTransform {
+      scale 3.7 2.4
+    }
+  }
+}
+Wall {
+  translation -0.455947 0.400567 -7.77153e-16
+  name "wall(3)"
+  size 0.009 0.14 0.21
+  appearance Plaster {
+    textureTransform TextureTransform {
+      scale 3.7 2.4
+    }
+  }
+}
+Wall {
+  translation 0.455577 0.393722 -1.11022e-15
+  name "wall(6)"
+  size 0.009 0.17 0.21
+  appearance Plaster {
+    textureTransform TextureTransform {
+      scale 3.7 2.4
+    }
+  }
+}
+Wall {
+  translation 0.343795 0.472256 -2.44249e-15
+  rotation 0 0 1 -1.5707996938995747
+  name "wall(2)"
+  size 0.009 0.22 0.21
+  appearance Plaster {
+    textureTransform TextureTransform {
+      scale 3.7 2.4
+    }
+  }
+}
+DEF floor RectangleArena {
+  floorSize 0.9 0.93
+  floorTileSize 0.9 0.9
+  floorAppearance PBRAppearance {
+    baseColorMap ImageTexture {
+      url [
+        "../resources/warehouse.png"
+      ]
+      repeatS FALSE
+      repeatT FALSE
+    }
+    roughness 0.2
+    metalness 0
+  }
+  wallHeight 0.0001
+}
